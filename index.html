@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Žodis — Lithuanian Verb Trainer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0e14;
+      --surface: #0d1117;
+      --panel: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent-dim: #388bfd33;
+      --success: #3fb950;
+      --warning: #d29922;
+      --error: #f85149;
+      --text: #e6edf3;
+      --text-dim: #8b949e;
+      --glow: 0 0 20px rgba(88, 166, 255, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .app {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HUD */
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      box-shadow: var(--glow);
+    }
+    .hud-item { display: flex; align-items: center; gap: 0.5rem; }
+    .hud-item span { color: var(--accent); }
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--surface);
+      border-radius: 3px;
+      margin: 0 1rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    /* Mission card */
+    .mission-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--glow);
+      animation: cardIn 0.35s ease;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .mission-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.25rem;
+    }
+    .prompt {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      word-break: break-word;
+    }
+    .inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .field label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .field input {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      padding: 0.6rem 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    .field input.correct { border-color: var(--success); background: rgba(63, 185, 80, 0.08); }
+    .field input.wrong { border-color: var(--error); background: rgba(248, 81, 73, 0.08); }
+    .field .hint-text {
+      font-size: 0.8rem;
+      color: var(--warning);
+      margin-top: 0.15rem;
+    }
+    .field .reveal-hint {
+      font-size: 0.9rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-top: 0.2rem;
+    }
+    .field .answer-highlight {
+      font-size: 0.95rem;
+      margin-top: 0.35rem;
+      font-family: 'JetBrains Mono', monospace;
+      word-break: break-all;
+    }
+    .field .answer-highlight .wrong-char {
+      color: var(--error);
+      text-decoration: underline;
+      text-decoration-color: var(--error);
+      text-underline-offset: 2px;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #2563eb);
+      color: #fff;
+      margin-top: 0.5rem;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-dim); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      margin-right: 0.5rem;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Virtual keyboard */
+    .vkeyboard {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .vkeyboard-label {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    .vkeyboard-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .vkey {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      width: 2.25rem;
+      height: 2.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .vkey:hover {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+    }
+
+    /* Feedback */
+    .feedback {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      animation: feedbackIn 0.3s ease;
+    }
+    @keyframes feedbackIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .feedback.correct { background: rgba(63, 185, 80, 0.15); border: 1px solid var(--success); color: var(--success); }
+    .feedback.wrong { background: rgba(248, 81, 73, 0.15); border: 1px solid var(--error); color: #ffb4ab; }
+
+    /* Screens */
+    .screen { display: none; flex: 1; flex-direction: column; }
+    .screen.active { display: flex; }
+    .start-screen { text-align: center; justify-content: center; }
+    .start-screen h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: clamp(2rem, 6vw, 3rem);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--accent), #a371f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .start-screen p {
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .end-screen { text-align: center; justify-content: center; }
+    .end-screen h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .end-screen .score-display {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 1rem 0;
+    }
+    .end-screen .perfect-msg { color: var(--success); margin-bottom: 1rem; }
+
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div id="screen-start" class="screen start-screen active">
+      <h1>ŽODIS</h1>
+      <p>Master 40 essential Lithuanian verbs. Type the missing forms and meanings. Use the virtual keyboard for ą, č, ė, į, š, ų, ū, ž.</p>
+      <button class="btn btn-primary" id="btn-start">Launch mission</button>
+    </div>
+
+    <div id="screen-game" class="screen">
+      <div class="hud">
+        <div class="hud-item">Verb <span id="current-n">0</span>/40</div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="hud-item">Score <span id="score">0</span></div>
+      </div>
+      <div class="mission-card">
+        <div class="mission-label">Mission</div>
+        <div class="prompt" id="prompt"></div>
+        <div id="feedback" class="feedback" style="display: none;"></div>
+        <div class="inputs" id="inputs"></div>
+        <button class="btn btn-primary" id="btn-check">Check</button>
+      </div>
+      <div class="vkeyboard">
+        <div class="vkeyboard-label">Lithuanian characters</div>
+        <div class="vkeyboard-row" id="vkeyboard">
+          <button type="button" class="vkey" data-char="ą">ą</button>
+          <button type="button" class="vkey" data-char="č">č</button>
+          <button type="button" class="vkey" data-char="ę">ę</button>
+          <button type="button" class="vkey" data-char="ė">ė</button>
+          <button type="button" class="vkey" data-char="į">į</button>
+          <button type="button" class="vkey" data-char="š">š</button>
+          <button type="button" class="vkey" data-char="ų">ų</button>
+          <button type="button" class="vkey" data-char="ū">ū</button>
+          <button type="button" class="vkey" data-char="ž">ž</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-end" class="screen end-screen">
+      <h2>Mission complete</h2>
+      <div class="score-display" id="final-score">0</div>
+      <p class="perfect-msg" id="perfect-msg" style="display: none;">Perfect run. Confetti!</p>
+      <button class="btn btn-secondary" id="btn-again">Again</button>
+      <button class="btn btn-primary" id="btn-restart">New mission</button>
+    </div>
+  </div>
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const VERBS = [
+        { inf: 'gauti', past: 'gavo', future: 'gaus', meaning: 'to get', meaningSynonyms: ['get'] },
+        { inf: 'išlaikyti', past: 'išlaikė', future: 'išlaikys', meaning: 'to pass (an exam)', meaningSynonyms: ['pass', 'exam'] },
+        { inf: 'neišlaikyti', past: 'neišlaikė', future: 'neišlaikys', meaning: 'to fail (an exam)', meaningSynonyms: ['fail', 'exam'] },
+        { inf: 'perlaikyti', past: 'perlaikė', future: 'perlaikys', meaning: 'to retake', meaningSynonyms: ['retake'] },
+        { inf: 'prasidėti', past: 'prasidėjo', future: 'prasidės', meaning: 'to begin, to start', meaningSynonyms: ['begin', 'start'] },
+        { inf: 'baigtis', past: 'baigėsi', future: 'baigsis', meaning: 'to finish, to end', meaningSynonyms: ['finish', 'end'] },
+        { inf: 'mokytis', past: 'mokėsi', future: 'mokysis', meaning: 'to learn, to study', meaningSynonyms: ['learn', 'study'] },
+        { inf: 'vėluoti', past: 'vėlavo', future: 'vėluos', meaning: 'to be late', meaningSynonyms: ['late'] },
+        { inf: 'skubėti', past: 'skubėjo', future: 'skubės', meaning: 'to hurry, to rush', meaningSynonyms: ['hurry', 'rush'] },
+        { inf: 'paklausti', past: 'paklausė', future: 'paklaus', meaning: 'to ask', meaningSynonyms: ['ask'] },
+        { inf: 'palaukti', past: 'palaukė', future: 'palauks', meaning: 'to wait', meaningSynonyms: ['wait'] },
+        { inf: 'spausdinti', past: 'spausdino', future: 'spausdins', meaning: 'to print', meaningSynonyms: ['print'] },
+        { inf: 'atostogauti', past: 'atostogavo', future: 'atostogaus', meaning: 'to have vacation', meaningSynonyms: ['vacation', 'holiday'] },
+        { inf: 'daryti', past: 'darė', future: 'darys', meaning: 'to do, to make', meaningSynonyms: ['do', 'make'] },
+        { inf: 'keliauti', past: 'keliavo', future: 'keliaus', meaning: 'to travel', meaningSynonyms: ['travel'] },
+        { inf: 'važiuoti', past: 'važiavo', future: 'važiuos', meaning: 'to go by vehicle', meaningSynonyms: ['go', 'vehicle', 'drive', 'ride'] },
+        { inf: 'atvykti', past: 'atvyko', future: 'atvyks', meaning: 'to arrive', meaningSynonyms: ['arrive'] },
+        { inf: 'išvykti', past: 'išvyko', future: 'išvyks', meaning: 'to depart, to leave', meaningSynonyms: ['depart', 'leave'] },
+        { inf: 'skristi', past: 'skrido', future: 'skris', meaning: 'to fly', meaningSynonyms: ['fly'] },
+        { inf: 'plaukti', past: 'plaukė', future: 'plauks', meaning: 'to swim', meaningSynonyms: ['swim'] },
+        { inf: 'eiti', past: 'ėjo', future: 'eis', meaning: 'to go for a walk', meaningSynonyms: ['walk', 'go'] },
+        { inf: 'grįžti', past: 'grįžo', future: 'grįš', meaning: 'to return', meaningSynonyms: ['return', 'come back'] },
+        { inf: 'mokėti', past: 'mokėjo', future: 'mokės', meaning: 'to know how to do something', meaningSynonyms: ['know', 'how'] },
+        { inf: 'patikti', past: 'patiko', future: 'patiks', meaning: 'to like', meaningSynonyms: ['like'] },
+        { inf: 'mėgti', past: 'mėgo', future: 'mėgs', meaning: 'to like', meaningSynonyms: ['like'] },
+        { inf: 'klausyti', past: 'klausė', future: 'klausys', meaning: 'to listen', meaningSynonyms: ['listen'] },
+        { inf: 'skaityti', past: 'skaitė', future: 'skaitys', meaning: 'to read', meaningSynonyms: ['read'] },
+        { inf: 'rašyti', past: 'rašė', future: 'rašys', meaning: 'to write', meaningSynonyms: ['write'] },
+        { inf: 'miegoti', past: 'miegojo', future: 'miegos', meaning: 'to sleep', meaningSynonyms: ['sleep'] },
+        { inf: 'sportuoti', past: 'sportavo', future: 'sportuos', meaning: 'to do sports', meaningSynonyms: ['sport', 'sports'] },
+        { inf: 'šokti', past: 'šoko', future: 'šoks', meaning: 'to dance', meaningSynonyms: ['dance'] },
+        { inf: 'dainuoti', past: 'dainavo', future: 'dainuos', meaning: 'to sing', meaningSynonyms: ['sing'] },
+        { inf: 'žaisti', past: 'žaidė', future: 'žais', meaning: 'to play', meaningSynonyms: ['play'] },
+        { inf: 'žiūrėti', past: 'žiūrėjo', future: 'žiūrės', meaning: 'to watch, to look', meaningSynonyms: ['watch', 'look'] },
+        { inf: 'bėgioti', past: 'bėgiojo', future: 'bėgios', meaning: 'to jog', meaningSynonyms: ['jog', 'run'] },
+        { inf: 'čiuožinėti', past: 'čiuožinėjo', future: 'čiuožinės', meaning: 'to skate', meaningSynonyms: ['skate'] },
+        { inf: 'plaukioti', past: 'plaukiojo', future: 'plaukios', meaning: 'to swim (repeatedly)', meaningSynonyms: ['swim'] },
+        { inf: 'žvejoti', past: 'žvejojo', future: 'žvejos', meaning: 'to go fishing', meaningSynonyms: ['fishing', 'fish'] },
+        { inf: 'slidinėti', past: 'slidinėjo', future: 'slidinės', meaning: 'to ski', meaningSynonyms: ['ski'] },
+        { inf: 'važinėti', past: 'važinėjo', future: 'važinės', meaning: 'to ride (repeatedly)', meaningSynonyms: ['ride'] }
+      ];
+
+      const FIELDS = ['past', 'future', 'meaning'];
+      const FIELD_LABELS = { past: 'Past form', future: 'Future form', meaning: 'Meaning (English)' };
+
+      function normalize(s) {
+        return (s || '').toLowerCase().trim().replace(/\s+/g, ' ');
+      }
+
+      function normalizeForMatch(s) {
+        return normalize(s).replace(/^to\s+/, '');
+      }
+
+      function meaningMatches(verb, input) {
+        const n = normalizeForMatch(input);
+        if (n === normalizeForMatch(verb.meaning)) return true;
+        return verb.meaningSynonyms.some(function (syn) {
+          return n === syn || n === 'to ' + syn;
+        });
+      }
+
+      function isLetter(c) {
+        return c.length === 1 && /^\p{L}$/u.test(c);
+      }
+
+      function buildAnswerHighlight(userVal, correctVal) {
+        if (!userVal && !correctVal) return null;
+        correctVal = correctVal || '';
+        userVal = userVal || '';
+        var frag = document.createDocumentFragment();
+        for (var i = 0; i < userVal.length; i++) {
+          var isWrong = i >= correctVal.length || userVal[i] !== correctVal[i];
+          if (isWrong) {
+            var span = document.createElement('span');
+            span.className = 'wrong-char';
+            span.textContent = userVal[i];
+            frag.appendChild(span);
+          } else {
+            frag.appendChild(document.createTextNode(userVal[i]));
+          }
+        }
+        return frag;
+      }
+
+      function revealHint(word, mistakes) {
+        if (mistakes <= 0) return null;
+        const letterCount = word.split('').filter(isLetter).length;
+        if (mistakes === 1) return 'Length: ' + word.length + (letterCount !== word.length ? ' (letters: ' + letterCount + ')' : '');
+        const lettersToReveal = Math.min(mistakes - 1, letterCount);
+        let revealed = 0;
+        let out = '';
+        for (let i = 0; i < word.length; i++) {
+          if (isLetter(word[i])) {
+            revealed++;
+            out += revealed <= lettersToReveal ? word[i] : '_';
+          } else {
+            out += word[i];
+          }
+        }
+        return out;
+      }
+
+      let state = {
+        index: 0,
+        score: 0,
+        mistakes: { past: 0, future: 0, meaning: 0 },
+        order: [],
+        sessionPerfect: true
+      };
+      var lastFocusedInput = null;
+
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(function (el) { el.classList.remove('active'); });
+        var el = document.getElementById('screen-' + id);
+        if (el) el.classList.add('active');
+      }
+
+      function getCurrentVerb() {
+        return VERBS[state.order[state.index]];
+      }
+
+      function renderGame() {
+        const verb = getCurrentVerb();
+        const progress = state.order.length ? ((state.index + 1) / state.order.length) * 100 : 0;
+        document.getElementById('current-n').textContent = state.index + 1;
+        document.getElementById('score').textContent = state.score;
+        document.getElementById('progress-fill').style.width = progress + '%';
+        document.getElementById('prompt').textContent = 'Infinitive: ' + verb.inf;
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('feedback').className = 'feedback';
+        const container = document.getElementById('inputs');
+        container.innerHTML = '';
+        FIELDS.forEach(function (key) {
+          const field = document.createElement('div');
+          field.className = 'field';
+          field.dataset.field = key;
+          const label = document.createElement('label');
+          label.textContent = FIELD_LABELS[key];
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.autocomplete = 'off';
+          input.placeholder = key === 'meaning' ? 'e.g. to get' : 'Type the form';
+          input.dataset.field = key;
+          input.classList.remove('correct', 'wrong');
+          input.addEventListener('focus', function () { lastFocusedInput = this; });
+          const hintSpan = document.createElement('div');
+          hintSpan.className = 'hint-text';
+          hintSpan.style.display = 'none';
+          const revealSpan = document.createElement('div');
+          revealSpan.className = 'reveal-hint';
+          revealSpan.style.display = 'none';
+          const answerHighlight = document.createElement('div');
+          answerHighlight.className = 'answer-highlight';
+          answerHighlight.style.display = 'none';
+          field.appendChild(label);
+          field.appendChild(input);
+          field.appendChild(hintSpan);
+          field.appendChild(revealSpan);
+          field.appendChild(answerHighlight);
+          container.appendChild(field);
+        });
+        var firstInput = container.querySelector('input');
+        lastFocusedInput = firstInput;
+        firstInput.focus();
+      }
+
+      function runConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const colors = ['#58a6ff', '#3fb950', '#a371f7', '#d29922', '#f85149'];
+        const pieces = [];
+        for (let i = 0; i < 120; i++) {
+          pieces.push({
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            vx: (Math.random() - 0.5) * 12,
+            vy: (Math.random() - 0.5) * 12 - 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            size: Math.random() * 8 + 4,
+            rot: Math.random() * 360
+          });
+        }
+        let frame = 0;
+        function draw() {
+          frame++;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          pieces.forEach(function (p) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.3;
+            p.rot += 4;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            ctx.restore();
+          });
+          if (frame < 90) requestAnimationFrame(draw);
+          else canvas.style.display = 'none';
+        }
+        canvas.style.display = 'block';
+        draw();
+      }
+
+      function checkAnswer() {
+        const verb = getCurrentVerb();
+        const inputs = document.querySelectorAll('#inputs input');
+        let allCorrect = true;
+        const feedbackEl = document.getElementById('feedback');
+        feedbackEl.style.display = 'block';
+        inputs.forEach(function (input) {
+          const key = input.dataset.field;
+          const val = normalize(input.value);
+          const fieldDiv = input.closest('.field');
+          const hintSpan = fieldDiv.querySelector('.hint-text');
+          const revealSpan = fieldDiv.querySelector('.reveal-hint');
+          const answerHighlight = fieldDiv.querySelector('.answer-highlight');
+          hintSpan.style.display = 'none';
+          revealSpan.style.display = 'none';
+          answerHighlight.style.display = 'none';
+          answerHighlight.innerHTML = '';
+          input.classList.remove('correct', 'wrong');
+          let correct = false;
+          if (key === 'meaning') {
+            correct = meaningMatches(verb, val);
+          } else {
+            correct = val === normalize(verb[key]);
+          }
+          if (correct) {
+            input.classList.add('correct');
+            state.score += 10;
+          } else {
+            allCorrect = false;
+            state.sessionPerfect = false;
+            state.mistakes[key]++;
+            input.classList.add('wrong');
+            const target = key === 'meaning' ? verb.meaning : verb[key];
+            const correctNorm = normalize(target);
+            const highlightFrag = buildAnswerHighlight(val, correctNorm);
+            if (highlightFrag && answerHighlight) {
+              answerHighlight.appendChild(highlightFrag);
+              answerHighlight.style.display = 'block';
+            }
+            const hint = revealHint(target, state.mistakes[key]);
+            if (hint && typeof hint === 'string' && hint.indexOf('_') !== -1) {
+              revealSpan.textContent = hint;
+              revealSpan.style.display = 'block';
+            } else if (hint) {
+              hintSpan.textContent = hint;
+              hintSpan.style.display = 'block';
+            }
+          }
+        });
+        if (allCorrect) {
+          feedbackEl.textContent = 'Correct. Well done!';
+          feedbackEl.className = 'feedback correct';
+          state.index++;
+          if (state.index >= state.order.length) {
+            document.getElementById('final-score').textContent = state.score;
+            if (state.sessionPerfect) {
+              document.getElementById('perfect-msg').style.display = 'block';
+              document.getElementById('perfect-msg').textContent = 'Perfect run. Confetti!';
+              runConfetti();
+            } else {
+              document.getElementById('perfect-msg').style.display = 'none';
+            }
+            showScreen('end');
+          } else {
+            state.mistakes = { past: 0, future: 0, meaning: 0 };
+            setTimeout(function () {
+              renderGame();
+            }, 600);
+          }
+        } else {
+          feedbackEl.textContent = 'Some answers are wrong. Use the hints below or try again.';
+          feedbackEl.className = 'feedback wrong';
+        }
+      }
+
+      document.getElementById('btn-start').addEventListener('click', function () {
+        state.index = 0;
+        state.score = 0;
+        state.mistakes = { past: 0, future: 0, meaning: 0 };
+        state.order = shuffle(VERBS.map(function (_, i) { return i; }));
+        state.sessionPerfect = true;
+        state.order = state.order.map(function (i) { return i; });
+        showScreen('game');
+        renderGame();
+      });
+
+      document.getElementById('btn-check').addEventListener('click', checkAnswer);
+      document.getElementById('inputs').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          checkAnswer();
+        }
+      });
+
+      document.getElementById('vkeyboard').addEventListener('click', function (e) {
+        const key = e.target.closest('.vkey');
+        if (!key) return;
+        e.preventDefault();
+        var input = lastFocusedInput;
+        if (!input || !document.contains(input)) {
+          input = document.querySelector('#inputs input');
+          if (input) lastFocusedInput = input;
+        }
+        if (input && input.matches && input.matches('input[data-field]')) {
+          var start = input.selectionStart;
+          var end = input.selectionEnd;
+          var text = input.value;
+          input.value = text.slice(0, start) + key.dataset.char + text.slice(end);
+          input.selectionStart = input.selectionEnd = start + 1;
+          input.focus();
+        }
+      });
+
+      document.getElementById('btn-again').addEventListener('click', function () {
+        state.index = 0;
+        state.score = 0;
+        state.mistakes = { past: 0, future: 0, meaning: 0 };
+        showScreen('game');
+        renderGame();
+      });
+
+      document.getElementById('btn-restart').addEventListener('click', function () {
+        showScreen('start');
+      });
+    })();
+  </script>
+</body>
+</html>
