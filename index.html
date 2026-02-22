@@ -296,7 +296,7 @@
   <div class="app">
     <div id="screen-start" class="screen start-screen active">
       <h1>ŽODIS</h1>
-      <p>Master 40 essential Lithuanian verbs. Type the missing forms and meanings. Use the virtual keyboard for ą, č, ė, į, š, ų, ū, ž.</p>
+      <p>Master 40 essential Lithuanian verbs. You see the infinitive; type the past form and meaning (English). Use the virtual keyboard for ą, č, ė, į, š, ų, ū, ž.</p>
       <button class="btn btn-primary" id="btn-start">Launch mission</button>
     </div>
 
@@ -354,7 +354,7 @@
         { inf: 'vėluoti', past: 'vėlavo', future: 'vėluos', meaning: 'to be late', meaningSynonyms: ['late'] },
         { inf: 'skubėti', past: 'skubėjo', future: 'skubės', meaning: 'to hurry, to rush', meaningSynonyms: ['hurry', 'rush'] },
         { inf: 'paklausti', past: 'paklausė', future: 'paklaus', meaning: 'to ask', meaningSynonyms: ['ask'] },
-        { inf: 'palaukti', past: 'palaukė', future: 'palauks', meaning: 'to wait', meaningSynonyms: ['wait'] },
+        { inf: 'palausti', past: 'palaukė', future: 'palauks', meaning: 'to wait', meaningSynonyms: ['wait'] },
         { inf: 'spausdinti', past: 'spausdino', future: 'spausdins', meaning: 'to print', meaningSynonyms: ['print'] },
         { inf: 'atostogauti', past: 'atostogavo', future: 'atostogaus', meaning: 'to have vacation', meaningSynonyms: ['vacation', 'holiday'] },
         { inf: 'daryti', past: 'darė', future: 'darys', meaning: 'to do, to make', meaningSynonyms: ['do', 'make'] },
@@ -386,8 +386,8 @@
         { inf: 'važinėti', past: 'važinėjo', future: 'važinės', meaning: 'to ride (repeatedly)', meaningSynonyms: ['ride'] }
       ];
 
-      const FIELDS = ['past', 'future', 'meaning'];
-      const FIELD_LABELS = { past: 'Past form', future: 'Future form', meaning: 'Meaning (English)' };
+      const FIELDS = ['past', 'meaning'];
+      const FIELD_LABELS = { past: 'Past form', meaning: 'Meaning (English)' };
 
       function normalize(s) {
         return (s || '').toLowerCase().trim().replace(/\s+/g, ' ');
@@ -449,7 +449,7 @@
       let state = {
         index: 0,
         score: 0,
-        mistakes: { past: 0, future: 0, meaning: 0 },
+        mistakes: { past: 0, meaning: 0 },
         order: [],
         sessionPerfect: true
       };
@@ -624,7 +624,7 @@
             }
             showScreen('end');
           } else {
-            state.mistakes = { past: 0, future: 0, meaning: 0 };
+            state.mistakes = { past: 0, meaning: 0 };
             setTimeout(function () {
               renderGame();
             }, 600);
@@ -638,7 +638,7 @@
       document.getElementById('btn-start').addEventListener('click', function () {
         state.index = 0;
         state.score = 0;
-        state.mistakes = { past: 0, future: 0, meaning: 0 };
+        state.mistakes = { past: 0, meaning: 0 };
         state.order = shuffle(VERBS.map(function (_, i) { return i; }));
         state.sessionPerfect = true;
         state.order = state.order.map(function (i) { return i; });
@@ -676,7 +676,7 @@
       document.getElementById('btn-again').addEventListener('click', function () {
         state.index = 0;
         state.score = 0;
-        state.mistakes = { past: 0, future: 0, meaning: 0 };
+        state.mistakes = { past: 0, meaning: 0 };
         showScreen('game');
         renderGame();
       });
