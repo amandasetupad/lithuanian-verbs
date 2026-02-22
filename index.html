@@ -296,7 +296,7 @@
   <div class="app">
     <div id="screen-start" class="screen start-screen active">
       <h1>ŽODIS</h1>
-      <p>Master 40 essential Lithuanian verbs. You see the infinitive; type the past form and meaning (English). Use the virtual keyboard for ą, č, ė, į, š, ų, ū, ž.</p>
+      <p>Master 40 essential Lithuanian verbs. You see the infinitive; type the past form, present form, and meaning (English). Use the virtual keyboard for ą, č, ė, į, š, ų, ū, ž.</p>
       <button class="btn btn-primary" id="btn-start">Launch mission</button>
     </div>
 
@@ -344,50 +344,50 @@
       'use strict';
 
       const VERBS = [
-        { inf: 'gauti', past: 'gavo', future: 'gaus', meaning: 'to get', meaningSynonyms: ['get'] },
-        { inf: 'išlaikyti', past: 'išlaikė', future: 'išlaikys', meaning: 'to pass (an exam)', meaningSynonyms: ['pass', 'exam'] },
-        { inf: 'neišlaikyti', past: 'neišlaikė', future: 'neišlaikys', meaning: 'to fail (an exam)', meaningSynonyms: ['fail', 'exam'] },
-        { inf: 'perlaikyti', past: 'perlaikė', future: 'perlaikys', meaning: 'to retake', meaningSynonyms: ['retake'] },
-        { inf: 'prasidėti', past: 'prasidėjo', future: 'prasidės', meaning: 'to begin, to start', meaningSynonyms: ['begin', 'start'] },
-        { inf: 'baigtis', past: 'baigėsi', future: 'baigsis', meaning: 'to finish, to end', meaningSynonyms: ['finish', 'end'] },
-        { inf: 'mokytis', past: 'mokėsi', future: 'mokysis', meaning: 'to learn, to study', meaningSynonyms: ['learn', 'study'] },
-        { inf: 'vėluoti', past: 'vėlavo', future: 'vėluos', meaning: 'to be late', meaningSynonyms: ['late'] },
-        { inf: 'skubėti', past: 'skubėjo', future: 'skubės', meaning: 'to hurry, to rush', meaningSynonyms: ['hurry', 'rush'] },
-        { inf: 'paklausti', past: 'paklausė', future: 'paklaus', meaning: 'to ask', meaningSynonyms: ['ask'] },
-        { inf: 'palausti', past: 'palaukė', future: 'palauks', meaning: 'to wait', meaningSynonyms: ['wait'] },
-        { inf: 'spausdinti', past: 'spausdino', future: 'spausdins', meaning: 'to print', meaningSynonyms: ['print'] },
-        { inf: 'atostogauti', past: 'atostogavo', future: 'atostogaus', meaning: 'to have vacation', meaningSynonyms: ['vacation', 'holiday'] },
-        { inf: 'daryti', past: 'darė', future: 'darys', meaning: 'to do, to make', meaningSynonyms: ['do', 'make'] },
-        { inf: 'keliauti', past: 'keliavo', future: 'keliaus', meaning: 'to travel', meaningSynonyms: ['travel'] },
-        { inf: 'važiuoti', past: 'važiavo', future: 'važiuos', meaning: 'to go by vehicle', meaningSynonyms: ['go', 'vehicle', 'drive', 'ride'] },
-        { inf: 'atvykti', past: 'atvyko', future: 'atvyks', meaning: 'to arrive', meaningSynonyms: ['arrive'] },
-        { inf: 'išvykti', past: 'išvyko', future: 'išvyks', meaning: 'to depart, to leave', meaningSynonyms: ['depart', 'leave'] },
-        { inf: 'skristi', past: 'skrido', future: 'skris', meaning: 'to fly', meaningSynonyms: ['fly'] },
-        { inf: 'plaukti', past: 'plaukė', future: 'plauks', meaning: 'to swim', meaningSynonyms: ['swim'] },
-        { inf: 'eiti', past: 'ėjo', future: 'eis', meaning: 'to go for a walk', meaningSynonyms: ['walk', 'go'] },
-        { inf: 'grįžti', past: 'grįžo', future: 'grįš', meaning: 'to return', meaningSynonyms: ['return', 'come back'] },
-        { inf: 'mokėti', past: 'mokėjo', future: 'mokės', meaning: 'to know how to do something', meaningSynonyms: ['know', 'how'] },
-        { inf: 'patikti', past: 'patiko', future: 'patiks', meaning: 'to like', meaningSynonyms: ['like'] },
-        { inf: 'mėgti', past: 'mėgo', future: 'mėgs', meaning: 'to like', meaningSynonyms: ['like'] },
-        { inf: 'klausyti', past: 'klausė', future: 'klausys', meaning: 'to listen', meaningSynonyms: ['listen'] },
-        { inf: 'skaityti', past: 'skaitė', future: 'skaitys', meaning: 'to read', meaningSynonyms: ['read'] },
-        { inf: 'rašyti', past: 'rašė', future: 'rašys', meaning: 'to write', meaningSynonyms: ['write'] },
-        { inf: 'miegoti', past: 'miegojo', future: 'miegos', meaning: 'to sleep', meaningSynonyms: ['sleep'] },
-        { inf: 'sportuoti', past: 'sportavo', future: 'sportuos', meaning: 'to do sports', meaningSynonyms: ['sport', 'sports'] },
-        { inf: 'šokti', past: 'šoko', future: 'šoks', meaning: 'to dance', meaningSynonyms: ['dance'] },
-        { inf: 'dainuoti', past: 'dainavo', future: 'dainuos', meaning: 'to sing', meaningSynonyms: ['sing'] },
-        { inf: 'žaisti', past: 'žaidė', future: 'žais', meaning: 'to play', meaningSynonyms: ['play'] },
-        { inf: 'žiūrėti', past: 'žiūrėjo', future: 'žiūrės', meaning: 'to watch, to look', meaningSynonyms: ['watch', 'look'] },
-        { inf: 'bėgioti', past: 'bėgiojo', future: 'bėgios', meaning: 'to jog', meaningSynonyms: ['jog', 'run'] },
-        { inf: 'čiuožinėti', past: 'čiuožinėjo', future: 'čiuožinės', meaning: 'to skate', meaningSynonyms: ['skate'] },
-        { inf: 'plaukioti', past: 'plaukiojo', future: 'plaukios', meaning: 'to swim (repeatedly)', meaningSynonyms: ['swim'] },
-        { inf: 'žvejoti', past: 'žvejojo', future: 'žvejos', meaning: 'to go fishing', meaningSynonyms: ['fishing', 'fish'] },
-        { inf: 'slidinėti', past: 'slidinėjo', future: 'slidinės', meaning: 'to ski', meaningSynonyms: ['ski'] },
-        { inf: 'važinėti', past: 'važinėjo', future: 'važinės', meaning: 'to ride (repeatedly)', meaningSynonyms: ['ride'] }
+        { inf: 'gauti', past: 'gavo', present: 'gauna', meaning: 'to get', meaningSynonyms: ['get'] },
+        { inf: 'išlaikyti', past: 'išlaikė', present: 'išlaiko', meaning: 'to pass (an exam)', meaningSynonyms: ['pass', 'exam'] },
+        { inf: 'neišlaikyti', past: 'neišlaikė', present: 'neišlaiko', meaning: 'to fail (an exam)', meaningSynonyms: ['fail', 'exam'] },
+        { inf: 'perlaikyti', past: 'perlaikė', present: 'perlaiko', meaning: 'to retake', meaningSynonyms: ['retake'] },
+        { inf: 'prasidėti', past: 'prasidėjo', present: 'prasideda', meaning: 'to begin, to start', meaningSynonyms: ['begin', 'start'] },
+        { inf: 'baigtis', past: 'baigėsi', present: 'baigiasi', meaning: 'to finish, to end', meaningSynonyms: ['finish', 'end'] },
+        { inf: 'mokytis', past: 'mokėsi', present: 'mokosi', meaning: 'to learn, to study', meaningSynonyms: ['learn', 'study'] },
+        { inf: 'vėluoti', past: 'vėlavo', present: 'vėluoja', meaning: 'to be late', meaningSynonyms: ['late'] },
+        { inf: 'skubėti', past: 'skubėjo', present: 'skubėja', meaning: 'to hurry, to rush', meaningSynonyms: ['hurry', 'rush'] },
+        { inf: 'paklausti', past: 'paklausė', present: 'paklausia', meaning: 'to ask', meaningSynonyms: ['ask'] },
+        { inf: 'palausti', past: 'palaukė', present: 'palaukia', meaning: 'to wait', meaningSynonyms: ['wait'] },
+        { inf: 'spausdinti', past: 'spausdino', present: 'spausdina', meaning: 'to print', meaningSynonyms: ['print'] },
+        { inf: 'atostogauti', past: 'atostogavo', present: 'atostogauja', meaning: 'to have vacation', meaningSynonyms: ['vacation', 'holiday'] },
+        { inf: 'daryti', past: 'darė', present: 'daro', meaning: 'to do, to make', meaningSynonyms: ['do', 'make'] },
+        { inf: 'keliauti', past: 'keliavo', present: 'keliauja', meaning: 'to travel', meaningSynonyms: ['travel'] },
+        { inf: 'važiuoti', past: 'važiavo', present: 'važiuoja', meaning: 'to go by vehicle', meaningSynonyms: ['go', 'vehicle', 'drive', 'ride'] },
+        { inf: 'atvykti', past: 'atvyko', present: 'atvyksta', meaning: 'to arrive', meaningSynonyms: ['arrive'] },
+        { inf: 'išvykti', past: 'išvyko', present: 'išvyksta', meaning: 'to depart, to leave', meaningSynonyms: ['depart', 'leave'] },
+        { inf: 'skristi', past: 'skrido', present: 'skrenda', meaning: 'to fly', meaningSynonyms: ['fly'] },
+        { inf: 'plaukti', past: 'plaukė', present: 'plaukia', meaning: 'to swim', meaningSynonyms: ['swim'] },
+        { inf: 'eiti', past: 'ėjo', present: 'eina', meaning: 'to go for a walk', meaningSynonyms: ['walk', 'go'] },
+        { inf: 'grįžti', past: 'grįžo', present: 'grįžta', meaning: 'to return', meaningSynonyms: ['return', 'come back'] },
+        { inf: 'mokėti', past: 'mokėjo', present: 'moka', meaning: 'to know how to do something', meaningSynonyms: ['know', 'how'] },
+        { inf: 'patikti', past: 'patiko', present: 'patinka', meaning: 'to like', meaningSynonyms: ['like'] },
+        { inf: 'mėgti', past: 'mėgo', present: 'mėgsta', meaning: 'to like', meaningSynonyms: ['like'] },
+        { inf: 'klausyti', past: 'klausė', present: 'klauso', meaning: 'to listen', meaningSynonyms: ['listen'] },
+        { inf: 'skaityti', past: 'skaitė', present: 'skaito', meaning: 'to read', meaningSynonyms: ['read'] },
+        { inf: 'rašyti', past: 'rašė', present: 'rašo', meaning: 'to write', meaningSynonyms: ['write'] },
+        { inf: 'miegoti', past: 'miegojo', present: 'miega', meaning: 'to sleep', meaningSynonyms: ['sleep'] },
+        { inf: 'sportuoti', past: 'sportavo', present: 'sportuoja', meaning: 'to do sports', meaningSynonyms: ['sport', 'sports'] },
+        { inf: 'šokti', past: 'šoko', present: 'šoka', meaning: 'to dance', meaningSynonyms: ['dance'] },
+        { inf: 'dainuoti', past: 'dainavo', present: 'dainuoja', meaning: 'to sing', meaningSynonyms: ['sing'] },
+        { inf: 'žaisti', past: 'žaidė', present: 'žaidžia', meaning: 'to play', meaningSynonyms: ['play'] },
+        { inf: 'žiūrėti', past: 'žiūrėjo', present: 'žiūri', meaning: 'to watch, to look', meaningSynonyms: ['watch', 'look'] },
+        { inf: 'bėgioti', past: 'bėgiojo', present: 'bėgioja', meaning: 'to jog', meaningSynonyms: ['jog', 'run'] },
+        { inf: 'čiuožinėti', past: 'čiuožinėjo', present: 'čiuožinėja', meaning: 'to skate', meaningSynonyms: ['skate'] },
+        { inf: 'plaukioti', past: 'plaukiojo', present: 'plaukioja', meaning: 'to swim (repeatedly)', meaningSynonyms: ['swim'] },
+        { inf: 'žvejoti', past: 'žvejojo', present: 'žvejoja', meaning: 'to go fishing', meaningSynonyms: ['fishing', 'fish'] },
+        { inf: 'slidinėti', past: 'slidinėjo', present: 'slidinėja', meaning: 'to ski', meaningSynonyms: ['ski'] },
+        { inf: 'važinėti', past: 'važinėjo', present: 'važinėja', meaning: 'to ride (repeatedly)', meaningSynonyms: ['ride'] }
       ];
 
-      const FIELDS = ['past', 'meaning'];
-      const FIELD_LABELS = { past: 'Past form', meaning: 'Meaning (English)' };
+      const FIELDS = ['past', 'present', 'meaning'];
+      const FIELD_LABELS = { past: 'Past form', present: 'Present form', meaning: 'Meaning (English)' };
 
       function normalize(s) {
         return (s || '').toLowerCase().trim().replace(/\s+/g, ' ');
@@ -449,7 +449,7 @@
       let state = {
         index: 0,
         score: 0,
-        mistakes: { past: 0, meaning: 0 },
+        mistakes: { past: 0, present: 0, meaning: 0 },
         order: [],
         sessionPerfect: true
       };
@@ -582,7 +582,8 @@
           if (key === 'meaning') {
             correct = meaningMatches(verb, val);
           } else {
-            correct = val === normalize(verb[key]);
+            var correctForm = verb[key];
+            correct = val === normalize(correctForm);
           }
           if (correct) {
             input.classList.add('correct');
@@ -624,7 +625,7 @@
             }
             showScreen('end');
           } else {
-            state.mistakes = { past: 0, meaning: 0 };
+            state.mistakes = { past: 0, present: 0, meaning: 0 };
             setTimeout(function () {
               renderGame();
             }, 600);
@@ -638,7 +639,7 @@
       document.getElementById('btn-start').addEventListener('click', function () {
         state.index = 0;
         state.score = 0;
-        state.mistakes = { past: 0, meaning: 0 };
+        state.mistakes = { past: 0, present: 0, meaning: 0 };
         state.order = shuffle(VERBS.map(function (_, i) { return i; }));
         state.sessionPerfect = true;
         state.order = state.order.map(function (i) { return i; });
@@ -676,7 +677,7 @@
       document.getElementById('btn-again').addEventListener('click', function () {
         state.index = 0;
         state.score = 0;
-        state.mistakes = { past: 0, meaning: 0 };
+        state.mistakes = { past: 0, present: 0, meaning: 0 };
         showScreen('game');
         renderGame();
       });
