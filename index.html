@@ -428,10 +428,16 @@
         return frag;
       }
 
+      function getLengthHint(word) {
+        if (!word) return '';
+        const letterCount = word.split('').filter(isLetter).length;
+        return 'Length: ' + word.length + (letterCount !== word.length ? ' (letters: ' + letterCount + ')' : '');
+      }
+
       function revealHint(word, mistakes) {
         if (mistakes <= 0) return null;
         const letterCount = word.split('').filter(isLetter).length;
-        if (mistakes === 1) return 'Length: ' + word.length + (letterCount !== word.length ? ' (letters: ' + letterCount + ')' : '');
+        if (mistakes === 1) return { lengthHint: getLengthHint(word), pattern: null };
         const lettersToReveal = Math.min(mistakes - 1, letterCount);
         let revealed = 0;
         let out = '';
@@ -443,7 +449,7 @@
             out += word[i];
           }
         }
-        return out;
+        return { lengthHint: getLengthHint(word), pattern: out };
       }
 
       let state = {
@@ -601,12 +607,13 @@
               answerHighlight.style.display = 'block';
             }
             const hint = revealHint(target, state.mistakes[key]);
-            if (hint && typeof hint === 'string' && hint.indexOf('_') !== -1) {
-              revealSpan.textContent = hint;
-              revealSpan.style.display = 'block';
-            } else if (hint) {
-              hintSpan.textContent = hint;
+            if (hint) {
+              hintSpan.textContent = hint.lengthHint;
               hintSpan.style.display = 'block';
+              if (hint.pattern) {
+                revealSpan.textContent = hint.pattern;
+                revealSpan.style.display = 'block';
+              }
             }
           }
         });
