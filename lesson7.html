@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lithuanian Learner – Lesson 7</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #222; }
+  h1 { text-align: center; padding: 24px 16px 8px; font-size: 1.5rem; color: #1a4a7a; }
+  .subtitle { text-align: center; color: #666; font-size: .9rem; margin-bottom: 16px; }
+
+  .tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 0 16px 16px; }
+  .tab { padding: 8px 16px; border-radius: 20px; border: 2px solid #1a4a7a; background: white;
+         color: #1a4a7a; cursor: pointer; font-size: .85rem; font-weight: 600; transition: all .2s; }
+  .tab.active, .tab:hover { background: #1a4a7a; color: white; }
+
+  .section { display: none; padding: 0 16px 40px; max-width: 800px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  .card { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px;
+          box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .card h3 { color: #1a4a7a; margin-bottom: 10px; font-size: 1rem; }
+
+  /* Flashcards */
+  .flashcard-wrap { perspective: 800px; cursor: pointer; margin-bottom: 16px; }
+  .flashcard { width: 100%; min-height: 140px; position: relative; transform-style: preserve-3d;
+               transition: transform .5s; border-radius: 14px; }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .fc-front, .fc-back { position: absolute; width: 100%; min-height: 140px; border-radius: 14px;
+                         backface-visibility: hidden; display: flex; align-items: center;
+                         justify-content: center; flex-direction: column; padding: 20px;
+                         text-align: center; box-shadow: 0 3px 12px rgba(0,0,0,.12); }
+  .fc-front { background: linear-gradient(135deg, #1a4a7a, #2d7dd2); color: white; }
+  .fc-back  { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; transform: rotateY(180deg); }
+  .fc-front .word { font-size: 1.6rem; font-weight: 700; }
+  .fc-front .hint { font-size: .8rem; opacity: .75; margin-top: 6px; }
+  .fc-back .translation { font-size: 1.4rem; font-weight: 700; }
+  .fc-back .example { font-size: .85rem; margin-top: 8px; opacity: .9; font-style: italic; }
+
+  .nav-btns { display: flex; gap: 10px; justify-content: center; margin-bottom: 8px; }
+  .btn { padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer;
+         font-size: .9rem; font-weight: 600; transition: opacity .2s; }
+  .btn-blue  { background: #1a4a7a; color: white; }
+  .btn-green { background: #27ae60; color: white; }
+  .btn-red   { background: #e74c3c; color: white; }
+  .btn-gray  { background: #aaa; color: white; }
+  .btn:hover { opacity: .85; }
+  .progress { text-align: center; color: #888; font-size: .85rem; margin-bottom: 16px; }
+
+  /* Vocab */
+  .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .vocab-item { background: white; border-radius: 10px; padding: 10px 14px;
+                box-shadow: 0 2px 6px rgba(0,0,0,.07); }
+  .vocab-lt { font-weight: 700; color: #1a4a7a; }
+  .vocab-en { color: #555; font-size: .85rem; }
+
+  /* Grammar */
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th { background: #1a4a7a; color: white; padding: 8px 10px; text-align: left; }
+  td { padding: 7px 10px; border-bottom: 1px solid #e8e8e8; }
+  tr:nth-child(even) td { background: #f7f9fc; }
+  .highlight { color: #e74c3c; font-weight: 700; }
+
+  /* Quiz */
+  .quiz-q { font-size: 1.1rem; font-weight: 600; color: #1a4a7a; margin-bottom: 14px; text-align: center; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .quiz-opt { padding: 12px; border-radius: 10px; border: 2px solid #ddd; background: white;
+              cursor: pointer; text-align: center; font-size: .9rem; transition: all .2s; }
+  .quiz-opt:hover { border-color: #2d7dd2; }
+  .quiz-opt.correct { background: #d4edda; border-color: #27ae60; color: #155724; font-weight: 700; }
+  .quiz-opt.wrong   { background: #f8d7da; border-color: #e74c3c; color: #721c24; }
+  .quiz-feedback { text-align: center; margin-top: 12px; font-weight: 600; font-size: 1rem; min-height: 24px; }
+  .quiz-score { text-align: center; color: #666; font-size: .85rem; margin-bottom: 10px; }
+
+  /* Dialogues */
+  .dialogue-row { margin-bottom: 12px; }
+  .d-q { font-weight: 600; color: #1a4a7a; }
+  .d-en { color: #888; font-size: .8rem; font-style: italic; }
+
+  /* ── TYPING ── */
+  .typing-mode-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .mode-btn { padding: 7px 14px; border-radius: 16px; border: 2px solid #1a4a7a;
+              background: white; color: #1a4a7a; cursor: pointer; font-size: .8rem; font-weight: 600; }
+  .mode-btn.active { background: #1a4a7a; color: white; }
+
+  .typing-prompt { font-size: 1.15rem; font-weight: 700; color: #1a4a7a; margin-bottom: 4px; }
+  .typing-sub    { font-size: .85rem; color: #888; margin-bottom: 12px; font-style: italic; }
+
+  .typing-input-wrap { position: relative; margin-bottom: 10px; }
+  .typing-input { width: 100%; padding: 12px 14px; font-size: 1rem; border-radius: 10px;
+                  border: 2px solid #ddd; outline: none; transition: border .2s; font-family: inherit; }
+  .typing-input:focus { border-color: #2d7dd2; }
+  .typing-input.ok  { border-color: #27ae60; background: #f0fff4; }
+  .typing-input.err { border-color: #e74c3c; background: #fff5f5; }
+
+  /* Special char buttons */
+  .spec-chars { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .spec-btn { padding: 6px 11px; border-radius: 8px; border: 1px solid #ccc; background: #f7f7f7;
+              cursor: pointer; font-size: 1rem; font-weight: 700; color: #1a4a7a;
+              transition: background .15s; user-select: none; }
+  .spec-btn:hover { background: #dde8f7; }
+
+  .typing-feedback { font-size: .95rem; font-weight: 600; min-height: 22px; margin-bottom: 8px; }
+  .typing-reveal { font-size: .9rem; color: #e74c3c; margin-bottom: 8px; display: none; }
+
+  .char-diff { display: flex; gap: 2px; font-size: 1rem; flex-wrap: wrap; margin-bottom: 6px; }
+  .char-match { color: #27ae60; font-weight: 700; }
+  .char-wrong { color: #e74c3c; font-weight: 700; text-decoration: underline; }
+  .char-missing { color: #aaa; }
+
+  .typing-stats { display: flex; gap: 16px; justify-content: center; font-size: .85rem;
+                  color: #666; margin: 6px 0 10px; }
+  .typing-stats span { background: #f0f4f8; padding: 4px 10px; border-radius: 8px; }
+
+  .hint-toggle { font-size: .8rem; color: #2d7dd2; cursor: pointer; text-decoration: underline;
+                 margin-bottom: 8px; display: inline-block; }
+
+  @media(max-width:480px) {
+    .vocab-grid, .quiz-options { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<p style="text-align:center;padding:12px 16px 0;font-size:.9rem"><a href="index.html" style="color:#1a4a7a;font-weight:600;text-decoration:none">← Back to Žodis</a></p>
+
+<h1>🇱🇹 Lithuanian – Lesson 7</h1>
+<p class="subtitle">Ar tavo šeima didelė? (Is your family big?)</p>
+
+<div class="tabs">
+  <div class="tab active" onclick="show('flashcards',this)">Flashcards</div>
+  <div class="tab" onclick="show('typing',this)">✍️ Typing</div>
+  <div class="tab" onclick="show('vocab',this)">Vocabulary</div>
+  <div class="tab" onclick="show('grammar',this)">Grammar</div>
+  <div class="tab" onclick="show('dialogue',this)">Dialogues</div>
+  <div class="tab" onclick="show('pictures',this)">🖼️ Describe</div>
+  <div class="tab" onclick="show('quiz',this)">Quiz</div>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="flashcards" class="section active">
+  <div class="card"><h3>🃏 Tap card to reveal translation</h3></div>
+  <div class="progress" id="fc-progress"></div>
+  <div class="flashcard-wrap" onclick="flipCard()">
+    <div class="flashcard" id="fc">
+      <div class="fc-front">
+        <div class="word" id="fc-word"></div>
+        <div class="hint" id="fc-hint"></div>
+      </div>
+      <div class="fc-back">
+        <div class="translation" id="fc-trans"></div>
+        <div class="example" id="fc-ex"></div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-blue" onclick="prevCard()">← Prev</button>
+    <button class="btn btn-blue" onclick="nextCard()">Next →</button>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-green" onclick="shuffleCards()">🔀 Shuffle</button>
+  </div>
+</div>
+
+<!-- TYPING -->
+<div id="typing" class="section">
+  <div class="card">
+    <h3>✍️ Typing Exercises</h3>
+    <div class="typing-mode-btns">
+      <button class="mode-btn active" onclick="setMode('en2lt',this)">🇬🇧→🇱🇹 Translate</button>
+      <button class="mode-btn" onclick="setMode('lt2en',this)">🇱🇹→🇬🇧 Translate</button>
+      <button class="mode-btn" onclick="setMode('listen',this)">👁️ Transcribe</button>
+      <button class="mode-btn" onclick="setMode('fill',this)">📝 Fill Gap</button>
+    </div>
+
+    <div class="typing-stats">
+      <span>✅ <span id="t-correct">0</span></span>
+      <span>❌ <span id="t-wrong">0</span></span>
+      <span>📊 <span id="t-pct">–</span></span>
+    </div>
+
+    <div class="typing-prompt" id="t-prompt"></div>
+    <div class="typing-sub" id="t-sub"></div>
+    <span class="hint-toggle" id="t-hint-toggle" onclick="toggleHint()">Show hint</span>
+    <div id="t-hint" style="display:none;font-size:.85rem;color:#e67e22;margin-bottom:8px;font-weight:600;"></div>
+
+    <!-- Special chars -->
+    <p style="font-size:.78rem;color:#999;margin-bottom:5px;">Special Lithuanian letters (tap to insert):</p>
+    <div class="spec-chars" id="spec-chars"></div>
+
+    <div class="typing-input-wrap">
+      <input class="typing-input" id="t-input" type="text"
+             placeholder="Type your answer here…"
+             oninput="liveCheck()" onkeydown="handleKey(event)" autocomplete="off" autocorrect="off" spellcheck="false"/>
+    </div>
+    <div class="char-diff" id="t-diff"></div>
+    <div class="typing-feedback" id="t-feedback"></div>
+    <div class="typing-reveal" id="t-reveal"></div>
+
+    <div class="nav-btns">
+      <button class="btn btn-blue" onclick="checkTyping()">Check ↵</button>
+      <button class="btn btn-green" id="t-next-btn" onclick="nextTyping()" style="display:none">Next →</button>
+      <button class="btn btn-gray" onclick="initTyping()">🔀 Shuffle</button>
+    </div>
+  </div>
+</div>
+
+<!-- VOCABULARY -->
+<div id="vocab" class="section">
+  <div class="card"><h3>👨‍👩‍👧 Family Members</h3><div class="vocab-grid" id="vg-family"></div></div>
+  <div class="card"><h3>📝 Character & Appearance</h3><div class="vocab-grid" id="vg-char"></div></div>
+  <div class="card"><h3>🎉 Life Events & Verbs</h3><div class="vocab-grid" id="vg-verbs"></div></div>
+</div>
+
+<!-- GRAMMAR -->
+<div id="grammar" class="section">
+  <div class="card">
+    <h3>📌 TURĖTI (to have) + Accusative</h3>
+    <p style="margin-bottom:10px;font-size:.9rem;color:#555">Use accusative after <strong>turiu / turi / turime…</strong></p>
+    <table>
+      <tr><th>NOM. MASC.</th><th>ACC. MASC.</th><th>NOM. FEM.</th><th>ACC. FEM.</th></tr>
+      <tr><td>vienas</td><td class="highlight">vieną</td><td>viena</td><td class="highlight">vieną</td></tr>
+      <tr><td>du</td><td class="highlight">du… / brolius, sūnus</td><td>dvi</td><td class="highlight">dvi… / tetas, kates</td></tr>
+      <tr><td>trys</td><td class="highlight">tris</td><td>trys</td><td class="highlight">tris</td></tr>
+      <tr><td>keturi</td><td class="highlight">keturis</td><td>keturios</td><td class="highlight">keturias</td></tr>
+      <tr><td>penki</td><td class="highlight">penkis</td><td>penkios</td><td class="highlight">penkias</td></tr>
+      <tr><td>šeši</td><td class="highlight">šešis</td><td>šešios</td><td class="highlight">šešias</td></tr>
+      <tr><td>septyni</td><td class="highlight">septyn<b>is</b></td><td>septynios</td><td class="highlight">septyn<b>ias</b></td></tr>
+      <tr><td>aštuoni</td><td class="highlight">aštuo<b>nis</b></td><td>aštuonios</td><td class="highlight">aštuo<b>nias</b></td></tr>
+      <tr><td>devyni</td><td class="highlight">devyn<b>is</b></td><td>devynios</td><td class="highlight">devyn<b>ias</b></td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>📌 NETURĖTI (not to have) + Genitive</h3>
+    <table>
+      <tr><th>Statement (ACC)</th><th>Negation (GEN)</th></tr>
+      <tr><td>Aš turiu brolį.</td><td class="highlight">Aš neturiu brolio.</td></tr>
+      <tr><td>Ji turi močiutę.</td><td class="highlight">Ji neturi močiutės.</td></tr>
+      <tr><td>Jis turi šunį.</td><td class="highlight">Jis neturi šuns.</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>📌 ABU / ABI (both)</h3>
+    <p style="font-size:.9rem;color:#555;">
+      <strong>abu</strong> = both (masc.) &nbsp;|&nbsp; <strong>abi</strong> = both (fem.)<br><br>
+      Abi močiutės gyvos. — <em>Both grandmothers are alive.</em><br>
+      Jūs abu esate turtingi. — <em>You are both rich.</em>
+    </p>
+  </div>
+  <div class="card">
+    <h3>📌 Kiek metų? (How old?)</h3>
+    <table>
+      <tr><th>Number</th><th>Age form</th><th>Example</th></tr>
+      <tr><td>1</td><td class="highlight">vieneri</td><td>Jam vieneri metai.</td></tr>
+      <tr><td>2</td><td class="highlight">dveji</td><td>Jai dveji metai.</td></tr>
+      <tr><td>3</td><td class="highlight">treji</td><td></td></tr>
+      <tr><td>4</td><td class="highlight">ketveri</td><td></td></tr>
+      <tr><td>5–9</td><td class="highlight">penkeri… devyneri</td><td></td></tr>
+      <tr><td>23</td><td class="highlight">dvidešimt treji</td><td>Man dvidešimt treji.</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- DIALOGUES -->
+<div id="dialogue" class="section">
+  <div class="card" id="dialogue-cards"></div>
+</div>
+
+<!-- PICTURES -->
+<div id="pictures" class="section">
+  <div class="card">
+    <h3>🖼️ Describe the person in Lithuanian</h3>
+    <p style="font-size:.85rem;color:#888;margin-bottom:14px">Look at the illustration and type 3–5 characteristics. Each correct word scores a point. Gender forms matter!</p>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn btn-blue" onclick="prevPic()">← Prev</button>
+      <button class="btn btn-blue" onclick="nextPic()">Next →</button>
+      <span style="align-self:center;color:#888;font-size:.85rem" id="pic-counter"></span>
+    </div>
+
+    <!-- Avatar canvas -->
+    <div style="display:flex;justify-content:center;margin-bottom:16px">
+      <svg id="pic-svg" width="180" height="260" viewBox="0 0 180 260" style="border-radius:16px;background:#f0f4f8;box-shadow:0 2px 10px rgba(0,0,0,.12)"></svg>
+    </div>
+
+    <!-- Traits chips (shown after reveal) -->
+    <div id="pic-chips" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px"></div>
+
+    <!-- Input -->
+    <p style="font-size:.78rem;color:#999;margin-bottom:5px;">Special Lithuanian letters (tap to insert):</p>
+    <div class="spec-chars" id="pic-spec-chars"></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <input class="typing-input" id="pic-input" type="text" placeholder="Type a characteristic (e.g. aukštas)…"
+             onkeydown="picKey(event)" autocomplete="off" autocorrect="off" spellcheck="false" style="flex:1"/>
+      <button class="btn btn-blue" onclick="checkPicWord()">Add ↵</button>
+    </div>
+
+    <div id="pic-feedback" style="font-size:.9rem;font-weight:600;min-height:22px;margin-bottom:8px;"></div>
+
+    <!-- Guessed words -->
+    <div id="pic-guessed" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-green" onclick="revealPic()">👁 Reveal all</button>
+      <button class="btn btn-gray" onclick="resetPic()">🔄 Reset</button>
+    </div>
+
+    <div id="pic-score-line" style="margin-top:12px;font-size:.85rem;color:#666;text-align:center"></div>
+  </div>
+</div>
+<div id="quiz" class="section">
+  <div class="card">
+    <div class="quiz-score" id="q-score"></div>
+    <div class="quiz-q" id="q-question"></div>
+    <div class="quiz-options" id="q-options"></div>
+    <div class="quiz-feedback" id="q-feedback"></div>
+    <div class="nav-btns" style="margin-top:14px">
+      <button class="btn btn-blue" id="q-next" onclick="nextQuestion()" style="display:none">Next →</button>
+      <button class="btn btn-green" id="q-restart" onclick="startQuiz()" style="display:none">🔄 Restart</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────────────────
+const flashData = [
+  // People
+  {w:"žmogus",h:"noun sg.",t:"man / person",e:""},
+  {w:"žmonės",h:"noun pl.",t:"people",e:""},
+  {w:"vaikas / vaikai",h:"noun",t:"child / children",e:"Ar turi vaikų?"},
+  {w:"mergaitė",h:"noun",t:"girl",e:""},
+  {w:"berniukas",h:"noun",t:"boy",e:""},
+  {w:"mergina",h:"noun",t:"young lady / girlfriend",e:""},
+  {w:"vaikinas",h:"noun",t:"young man / boyfriend",e:"Koks tavo vaikino vardas?"},
+  {w:"moteris",h:"noun",t:"woman",e:""},
+  {w:"vyras",h:"noun",t:"man / husband",e:""},
+  // Family
+  {w:"šeima",h:"noun",t:"family",e:"Ar tavo šeima didelė?"},
+  {w:"motina / mama / mamytė",h:"noun",t:"mother / mom / mommy",e:"Mama gyvena Vilniuje."},
+  {w:"tėvas / tėtis / tėtė",h:"noun",t:"father / dad / daddy",e:"Tėtis dirba mieste."},
+  {w:"tėvai",h:"noun pl.",t:"parents",e:"Kur gyvena tavo tėvai?"},
+  {w:"pamotė",h:"noun",t:"stepmother",e:""},
+  {w:"patėvis",h:"noun",t:"stepfather",e:""},
+  {w:"vyras",h:"noun",t:"husband",e:""},
+  {w:"žmona",h:"noun",t:"wife",e:"Jo žmona Marija dirba ligoninėje."},
+  {w:"brolis",h:"noun",t:"brother",e:"Mano brolis studijuoja fiziką."},
+  {w:"sesuo / sesė",h:"noun",t:"sister",e:"Ji turi dvi seseris."},
+  {w:"sūnus",h:"noun",t:"son",e:"Jie turi du sūnus."},
+  {w:"duktė / dukra",h:"noun",t:"daughter",e:"Jai septyneri."},
+  {w:"močiutė / senelė",h:"noun",t:"grandmother",e:"Jai skambina močiutė."},
+  {w:"senelis",h:"noun",t:"grandfather",e:"Senelis gyvena kaime."},
+  {w:"seneliai",h:"noun pl.",t:"grandparents",e:""},
+  {w:"anūkas",h:"noun",t:"grandson",e:""},
+  {w:"anūkė",h:"noun",t:"granddaughter",e:""},
+  {w:"dėdė",h:"noun",t:"uncle",e:"Perku dovaną dėdei."},
+  {w:"teta",h:"noun",t:"aunt",e:""},
+  {w:"pusseserė",h:"noun",t:"cousin (f)",e:""},
+  {w:"pusbrolis",h:"noun",t:"cousin (m)",e:""},
+  {w:"sūnėnas",h:"noun",t:"nephew",e:""},
+  {w:"dukterėčia",h:"noun",t:"niece",e:""},
+  {w:"giminės",h:"noun pl.",t:"relatives",e:""},
+  // Marital status
+  {w:"vedęs",h:"adj",t:"married (m)",e:"Mano brolis vedęs."},
+  {w:"ištekėjusi",h:"adj",t:"married (f)",e:"Ar tavo sesuo ištekėjusi?"},
+  {w:"išsiskyręs / išsiskyrusi",h:"adj",t:"divorced (m/f)",e:"Jie išsisyrę."},
+  {w:"našlys / -ė",h:"noun",t:"widower / widow",e:""},
+  {w:"miręs / mirusi",h:"adj",t:"dead (m/f)",e:""},
+  // Events
+  {w:"šventė",h:"noun",t:"festival / party / holiday",e:""},
+  {w:"proga",h:"noun",t:"occasion",e:""},
+  {w:"gimtadienis",h:"noun",t:"birthday",e:"Kada tavo gimtadienis?"},
+  {w:"jubiliejus",h:"noun",t:"anniversary",e:""},
+  {w:"vestuvės",h:"noun pl.",t:"wedding",e:""},
+  {w:"dovana",h:"noun",t:"gift / present",e:"Kokią dovaną dovanosi?"},
+  {w:"pinigai",h:"noun pl.",t:"money / cash / currency",e:""},
+  // Verbs
+  {w:"turėti, turi, turėjo",h:"verb",t:"to have",e:"Aš turiu vieną brolį."},
+  {w:"mylėti, myli, mylėjo",h:"verb",t:"to love",e:"Aš tave myliu!"},
+  {w:"gimti, gimsta, gimė",h:"verb",t:"to be born",e:"Birželį jam gims vaikas."},
+  {w:"mirti, miršta, mirė",h:"verb",t:"to die",e:""},
+  {w:"švęsti, švenčia, šventė",h:"verb",t:"to celebrate",e:""},
+  {w:"dovanoti, dovanoja, dovanojo",h:"verb",t:"to give a present",e:""},
+  {w:"skambinti, skambina, skambino",h:"verb",t:"to call",e:"Kas skambina dukrai?"},
+  {w:"pirkti, perka, pirko",h:"verb",t:"to buy",e:"Kam perki dovaną?"},
+  {w:"atrodyti, atrodo, atrodė",h:"verb",t:"to look like",e:"Aš panašus į mamą."},
+  {w:"kartu",h:"adv",t:"together",e:"Tėvai negyvena kartu."},
+  // Appearance
+  {w:"aukštas / aukšta",h:"adj",t:"tall / high",e:""},
+  {w:"žemas / žema",h:"adj",t:"short",e:""},
+  {w:"stambus / stambi",h:"adj",t:"big / large",e:""},
+  {w:"lieknas / liekna",h:"adj",t:"slim",e:""},
+  {w:"didelis / didelė",h:"adj",t:"big / large / tall",e:"Ar tavo šeima didelė?"},
+  {w:"mažas / maža",h:"adj",t:"small / little",e:""},
+  {w:"jaunas / jauna",h:"adj",t:"young",e:""},
+  {w:"senas / sena",h:"adj",t:"old",e:""},
+  {w:"vidutinio amžiaus",h:"phrase",t:"middle-aged",e:""},
+  {w:"šviesus / šviesi",h:"adj",t:"blond / light / clear",e:""},
+  {w:"tamsus / tamsi",h:"adj",t:"dark",e:"Ji tamsi."},
+  {w:"gražus / graži",h:"adj",t:"nice / beautiful",e:""},
+  {w:"panašus / panaši",h:"adj",t:"alike / similar",e:"Aš panašus į mamą."},
+  // Character
+  {w:"charakteris",h:"noun",t:"character",e:""},
+  {w:"geras / gera",h:"adj",t:"good",e:""},
+  {w:"blogas / bloga",h:"adj",t:"bad",e:""},
+  {w:"linksmas / linksma",h:"adj",t:"joyful / merry / happy",e:"Ji labai linksma."},
+  {w:"liūdnas / liūdna",h:"adj",t:"sad",e:""},
+  {w:"greitas / greita",h:"adj",t:"fast",e:""},
+  {w:"lėtas / lėta",h:"adj",t:"slow",e:""},
+  {w:"įdomus / įdomi",h:"adj",t:"interesting",e:""},
+  {w:"nuobodus / nuobodi",h:"adj",t:"boring",e:""},
+  {w:"protingas / protinga",h:"adj",t:"smart / clever",e:""},
+  {w:"kvailas / kvaila",h:"adj",t:"fool / stupid",e:""},
+  {w:"darbštus / darbšti",h:"adj",t:"diligent",e:""},
+  {w:"tingus / tingi",h:"adj",t:"lazy",e:""},
+  {w:"tinginys / tinginė",h:"noun",t:"lazy fellow",e:""},
+  {w:"mielas / miela",h:"adj",t:"lovely / dear",e:""},
+  {w:"draugiškas / draugiška",h:"adj",t:"friendly",e:"Ji draugiška."},
+  {w:"malonus / maloni",h:"adj",t:"pleasant / nice",e:""},
+  {w:"mandagus / mandagi",h:"adj",t:"polite",e:""},
+  {w:"nuoširdus / nuoširdi",h:"adj",t:"sincere",e:""},
+  {w:"tylus / tyli",h:"adj",t:"silent",e:""},
+  {w:"piktas / pikta",h:"adj",t:"angry",e:""},
+];
+
+// Typing exercises: {prompt, answer, sub, hint, mode}
+// mode: en2lt | lt2en | listen | fill
+const typingData = [
+  // Words EN→LT
+  {p:"mother / mom",a:"motina",s:"Type in Lithuanian",h:"mo-ti-na",mode:"en2lt"},
+  {p:"grandmother",a:"močiutė",s:"Type in Lithuanian",h:"mo-čiu-tė",mode:"en2lt"},
+  {p:"grandfather",a:"senelis",s:"Type in Lithuanian",h:"se-ne-lis",mode:"en2lt"},
+  {p:"brother",a:"brolis",s:"Type in Lithuanian",h:"bro-lis",mode:"en2lt"},
+  {p:"sister",a:"sesuo",s:"Type in Lithuanian",h:"se-suo",mode:"en2lt"},
+  {p:"uncle",a:"dėdė",s:"Type in Lithuanian",h:"dė-dė",mode:"en2lt"},
+  {p:"aunt",a:"teta",s:"Type in Lithuanian",h:"te-ta",mode:"en2lt"},
+  {p:"family",a:"šeima",s:"Type in Lithuanian",h:"šei-ma",mode:"en2lt"},
+  {p:"wife",a:"žmona",s:"Type in Lithuanian",h:"žmo-na",mode:"en2lt"},
+  {p:"husband",a:"vyras",s:"Type in Lithuanian",h:"vy-ras",mode:"en2lt"},
+  {p:"son",a:"sūnus",s:"Type in Lithuanian",h:"sū-nus",mode:"en2lt"},
+  {p:"daughter",a:"duktė",s:"Type in Lithuanian",h:"duk-tė",mode:"en2lt"},
+  {p:"birthday",a:"gimtadienis",s:"Type in Lithuanian",h:"gim-ta-die-nis",mode:"en2lt"},
+  {p:"gift / present",a:"dovana",s:"Type in Lithuanian",h:"do-va-na",mode:"en2lt"},
+  {p:"relatives",a:"giminės",s:"Type in Lithuanian",h:"gi-mi-nės",mode:"en2lt"},
+  {p:"together",a:"kartu",s:"Type in Lithuanian",h:"kar-tu",mode:"en2lt"},
+  {p:"friendly",a:"draugiškas",s:"Type in Lithuanian (masc.)",h:"drau-giš-kas",mode:"en2lt"},
+  {p:"to love",a:"mylėti",s:"Type in Lithuanian",h:"my-lė-ti",mode:"en2lt"},
+  {p:"to buy",a:"pirkti",s:"Type in Lithuanian",h:"pirk-ti",mode:"en2lt"},
+  {p:"to celebrate",a:"švęsti",s:"Type in Lithuanian",h:"švęs-ti",mode:"en2lt"},
+  {p:"married (about a man)",a:"vedęs",s:"Type in Lithuanian",h:"ve-dęs",mode:"en2lt"},
+  {p:"married (about a woman)",a:"ištekėjusi",s:"Type in Lithuanian",h:"iš-te-kė-ju-si",mode:"en2lt"},
+  {p:"divorced (m.)",a:"išsiskyręs",s:"Type in Lithuanian",h:"iš-sis-ky-ręs",mode:"en2lt"},
+  // Words LT→EN
+  {p:"šeima",a:"family",s:"Type in English",mode:"lt2en"},
+  {p:"brolis",a:"brother",s:"Type in English",mode:"lt2en"},
+  {p:"sesuo",a:"sister",s:"Type in English",mode:"lt2en"},
+  {p:"sūnus",a:"son",s:"Type in English",mode:"lt2en"},
+  {p:"duktė",a:"daughter",s:"Type in English",mode:"lt2en"},
+  {p:"dovana",a:"gift",s:"Type in English",mode:"lt2en"},
+  {p:"gimtadienis",a:"birthday",s:"Type in English",mode:"lt2en"},
+  {p:"kartu",a:"together",s:"Type in English",mode:"lt2en"},
+  {p:"vedęs",a:"married",s:"Type in English",mode:"lt2en"},
+  {p:"mylėti",a:"to love",s:"Type in English",mode:"lt2en"},
+  {p:"motina",a:"mother",s:"Type in English",mode:"lt2en"},
+  {p:"tėvas",a:"father",s:"Type in English",mode:"lt2en"},
+  {p:"močiutė",a:"grandmother",s:"Type in English",mode:"lt2en"},
+  {p:"senelis",a:"grandfather",s:"Type in English",mode:"lt2en"},
+  {p:"dėdė",a:"uncle",s:"Type in English",mode:"lt2en"},
+  {p:"teta",a:"aunt",s:"Type in English",mode:"lt2en"},
+  {p:"vyras",a:"husband",s:"Type in English",mode:"lt2en"},
+  {p:"žmona",a:"wife",s:"Type in English",mode:"lt2en"},
+  {p:"vaikas",a:"child",s:"Type in English",mode:"lt2en"},
+  {p:"pusseserė",a:"cousin",s:"Type in English",mode:"lt2en"},
+  {p:"anūkas",a:"grandson",s:"Type in English",mode:"lt2en"},
+  {p:"anūkė",a:"granddaughter",s:"Type in English",mode:"lt2en"},
+  {p:"giminės",a:"relatives",s:"Type in English",mode:"lt2en"},
+  {p:"pamotė",a:"stepmother",s:"Type in English",mode:"lt2en"},
+  {p:"patėvis",a:"stepfather",s:"Type in English",mode:"lt2en"},
+  {p:"ištekėjusi",a:"married",s:"Type in English (about a woman)",mode:"lt2en"},
+  {p:"išsiskyręs",a:"divorced",s:"Type in English",mode:"lt2en"},
+  {p:"našlys",a:"widower",s:"Type in English",mode:"lt2en"},
+  {p:"vestuvės",a:"wedding",s:"Type in English",mode:"lt2en"},
+  {p:"jubiliejus",a:"anniversary",s:"Type in English",mode:"lt2en"},
+  {p:"gimti",a:"to be born",s:"Type in English",mode:"lt2en"},
+  {p:"mirti",a:"to die",s:"Type in English",mode:"lt2en"},
+  {p:"švęsti",a:"to celebrate",s:"Type in English",mode:"lt2en"},
+  {p:"dovanoti",a:"to give a present",s:"Type in English",mode:"lt2en"},
+  {p:"skambinti",a:"to call",s:"Type in English",mode:"lt2en"},
+  {p:"pirkti",a:"to buy",s:"Type in English",mode:"lt2en"},
+  {p:"atrodyti",a:"to look like",s:"Type in English",mode:"lt2en"},
+  {p:"gyventi",a:"to live",s:"Type in English",mode:"lt2en"},
+  {p:"turėti",a:"to have",s:"Type in English",mode:"lt2en"},
+  {p:"neturėti",a:"not to have",s:"Type in English",mode:"lt2en"},
+  {p:"aukštas",a:"tall",s:"Type in English",mode:"lt2en"},
+  {p:"žemas",a:"short",s:"Type in English",mode:"lt2en"},
+  {p:"lieknas",a:"slim",s:"Type in English",mode:"lt2en"},
+  {p:"stambus",a:"big",s:"Type in English",mode:"lt2en"},
+  {p:"gražus",a:"beautiful",s:"Type in English",mode:"lt2en"},
+  {p:"tamsus",a:"dark",s:"Type in English",mode:"lt2en"},
+  {p:"šviesus",a:"blond",s:"Type in English",mode:"lt2en"},
+  {p:"jaunas",a:"young",s:"Type in English",mode:"lt2en"},
+  {p:"senas",a:"old",s:"Type in English",mode:"lt2en"},
+  {p:"linksmas",a:"happy",s:"Type in English",mode:"lt2en"},
+  {p:"liūdnas",a:"sad",s:"Type in English",mode:"lt2en"},
+  {p:"protingas",a:"smart",s:"Type in English",mode:"lt2en"},
+  {p:"draugiškas",a:"friendly",s:"Type in English",mode:"lt2en"},
+  {p:"mielas",a:"lovely",s:"Type in English",mode:"lt2en"},
+  {p:"mandagus",a:"polite",s:"Type in English",mode:"lt2en"},
+  {p:"nuoširdus",a:"sincere",s:"Type in English",mode:"lt2en"},
+  {p:"darbštus",a:"diligent",s:"Type in English",mode:"lt2en"},
+  {p:"tingus",a:"lazy",s:"Type in English",mode:"lt2en"},
+  {p:"tylus",a:"silent",s:"Type in English",mode:"lt2en"},
+  {p:"piktas",a:"angry",s:"Type in English",mode:"lt2en"},
+  {p:"įdomus",a:"interesting",s:"Type in English",mode:"lt2en"},
+  {p:"nuobodus",a:"boring",s:"Type in English",mode:"lt2en"},
+  {p:"panašus",a:"similar",s:"Type in English",mode:"lt2en"},
+  {p:"greitas",a:"fast",s:"Type in English",mode:"lt2en"},
+  {p:"lėtas",a:"slow",s:"Type in English",mode:"lt2en"},
+  {p:"didelis",a:"big",s:"Type in English",mode:"lt2en"},
+  {p:"mažas",a:"small",s:"Type in English",mode:"lt2en"},
+  // Transcribe (see Lithuanian, type it back)
+  {p:"močiutė",a:"močiutė",s:"Type exactly what you see",h:"mo-čiu-tė",mode:"listen"},
+  {p:"senelis",a:"senelis",s:"Type exactly what you see",h:"se-ne-lis",mode:"listen"},
+  {p:"išsiskyręs",a:"išsiskyręs",s:"Type exactly what you see",h:"iš-sis-ky-ręs",mode:"listen"},
+  {p:"dvidešimt treji",a:"dvidešimt treji",s:"Type exactly what you see",h:"dvi-de-šimt tre-ji",mode:"listen"},
+  {p:"ištekėjusi",a:"ištekėjusi",s:"Type exactly what you see",h:"iš-te-kė-ju-si",mode:"listen"},
+  {p:"draugiškas",a:"draugiškas",s:"Type exactly what you see",h:"drau-giš-kas",mode:"listen"},
+  {p:"gimtadienis",a:"gimtadienis",s:"Type exactly what you see",h:"gim-ta-die-nis",mode:"listen"},
+  {p:"šeima",a:"šeima",s:"Type exactly what you see",h:"šei-ma",mode:"listen"},
+  // Fill the gap (sentences)
+  {p:"Aš turiu ___ brolį. (one – acc.)",a:"vieną",s:"Fill in the blank",h:"vie...",mode:"fill"},
+  {p:"Aš turiu ___ seseris. (two – acc. fem.)",a:"dvi",s:"Fill in the blank",h:"d...",mode:"fill"},
+  {p:"Ji turi ___ vaikus. (three – acc.)",a:"tris",s:"Fill in the blank",h:"tr...",mode:"fill"},
+  {p:"Aš ___ brolio. (I don't have)",a:"neturiu",s:"Fill in the blank",h:"ne-tu-...",mode:"fill"},
+  {p:"Man dvidešimt ___. (23 years old)",a:"treji",s:"Fill in the blank – age form",h:"tre...",mode:"fill"},
+  {p:"Mano brolis ___. (married – m.)",a:"vedęs",s:"Fill in the blank",h:"ve...",mode:"fill"},
+  {p:"___ močiutės gyvos. (both – fem.)",a:"Abi",s:"Fill in the blank",h:"A...",mode:"fill"},
+  {p:"Aš ___ į mamą. (I look like)",a:"panašus",s:"Fill in the blank (m. speaker)",h:"pa-na-...",mode:"fill"},
+  {p:"Jam reikia naujos ___. (book – gen.)",a:"knygos",s:"Fill in the blank",h:"kny...",mode:"fill"},
+  {p:"Tėvai negyvena ___. (together)",a:"kartu",s:"Fill in the blank",h:"kar...",mode:"fill"},
+  {p:"Aš tave ___! (I love you)",a:"myliu",s:"Fill in the blank",h:"my...",mode:"fill"},
+  {p:"Jo žmona Marija dirba ___. (hospital – loc.)",a:"ligoninėje",s:"Fill in the blank",h:"li-go-ni-nė-je",mode:"fill"},
+];
+
+const vocabFamily = [
+  ["motina / mama","mother / mom"],["tėvas / tėtis","father / dad"],
+  ["brolis","brother"],["sesuo / sesė","sister"],
+  ["sūnus","son"],["duktė / dukra","daughter"],
+  ["vaikas","child"],["vyras","husband"],
+  ["žmona","wife"],["močiutė / senelė","grandmother"],
+  ["senelis","grandfather"],["dėdė","uncle"],
+  ["teta","aunt"],["pusseserė","cousin (f)"],
+  ["pusbrolis","cousin (m)"],["anūkas / anūkė","grandson / granddaughter"],
+  ["giminės","relatives"],["šeima","family"],
+  ["pamotė","stepmother"],["patėvis","stepfather"],
+];
+const vocabChar = [
+  ["aukštas / -a","tall"],["žemas / -a","short"],
+  ["lieknas / -a","slim"],["stambus / stambi","big"],
+  ["gražus / graži","beautiful"],["tamsus / tamsi","dark"],
+  ["šviesus / šviesi","blond / light"],["jaunas / jauna","young"],
+  ["senas / sena","old"],["linksmas / -a","happy"],
+  ["liūdnas / -a","sad"],["protingas / -a","smart"],
+  ["draugiškas / -a","friendly"],["mielas / miela","lovely"],
+  ["mandagus / -i","polite"],["nuoširdus / -i","sincere"],
+  ["darbštus / darbšti","diligent"],["tingus / tingi","lazy"],
+  ["tylus / tyli","silent"],["piktas / pikta","angry"],
+  ["įdomus / įdomi","interesting"],["nuobodus / -i","boring"],
+];
+const vocabVerbs = [
+  ["turėti","to have"],["neturėti","not to have"],
+  ["mylėti","to love"],["gimti","to be born"],
+  ["mirti","to die"],["švęsti","to celebrate"],
+  ["dovanoti","to give a present"],["skambinti","to call"],
+  ["pirkti","to buy"],["atrodyti","to look like"],
+  ["gyventi","to live"],["dirbti","to work"],
+  ["studijuoti","to study"],["laukti","to wait / expect"],
+];
+
+const dialogues = [
+  {q:"Kiek tau / jums metų?",a:"Man dvidešimt treji (23).",eq:"How old are you?",ea:"I am 23."},
+  {q:"Kiek metų tavo dukteriai?",a:"Jai septyneri (7).",eq:"How old is your daughter?",ea:"She is 7."},
+  {q:"Kada tavo gimtadienis?",a:"Mano gimtadienis lapkričio šeštą dieną.",eq:"When is your birthday?",ea:"My birthday is November 6th."},
+  {q:"Ar tavo šeima didelė?",a:"Taip, aš turiu vieną seserį ir du brolius.",eq:"Is your family big?",ea:"Yes, I have one sister and two brothers."},
+  {q:"Ar tavo sesuo ištekėjusi?",a:"Ne, neištekėjusi, bet ji turi draugą.",eq:"Is your sister married?",ea:"No, not married, but she has a boyfriend."},
+  {q:"Ar tavo brolis vedęs?",a:"Taip, vedęs. Jo žmona Marija dirba ligoninėje.",eq:"Is your brother married?",ea:"Yes. His wife Marija works at a hospital."},
+  {q:"Ar tu turi šunį?",a:"Ne, bet aš turiu katę.",eq:"Do you have a dog?",ea:"No, but I have a cat."},
+  {q:"Kur gyvena tavo tėvai?",a:"Jie negyvena kartu, jie išsisyrę. Mama gyvena Vilniuje, tėtis – Panevėžyje.",eq:"Where do your parents live?",ea:"They don't live together, they're divorced."},
+  {q:"Į ką tu panašus?",a:"Aš panašus į mamą, o sesuo panaši į tėtį.",eq:"Who do you look like?",ea:"I look like mom, and my sister looks like dad."},
+  {q:"Kam perki dovaną?",a:"Aš perku dovaną dėdei.",eq:"Who are you buying a gift for?",ea:"I'm buying a gift for my uncle."},
+  {q:"Kas vyriausias tavo šeimoje?",a:"Vyriausias mano brolis Algirdas.",eq:"Who is the oldest in your family?",ea:"My brother Algirdas is the oldest."},
+  {q:"Aš tave myliu!",a:"Ir aš tave!",eq:"I love you!",ea:"I love you too!"},
+];
+
+const quizData = [
+  {q:"How do you say 'grandmother'?",opts:["senelis","močiutė","dėdė","teta"],ans:1},
+  {q:"Aš turiu ___ brolį. (one)",opts:["vienas","vieną","viena","vienos"],ans:1},
+  {q:"How do you say 'I am 23 years old'?",opts:["Man dvidešimt treji.","Aš turiu 23.","Man yra 23.","Aš esu 23."],ans:0},
+  {q:"'išsiskyręs' means:",opts:["married (m)","widower","divorced (m)","single"],ans:2},
+  {q:"'Draugiškas' means:",opts:["angry","friendly","boring","silent"],ans:1},
+  {q:"Neturėti takes which case?",opts:["Accusative","Nominative","Genitive","Dative"],ans:2},
+  {q:"'both' in Lithuanian (feminine) is:",opts:["abu","abi","abiejų","abiem"],ans:1},
+  {q:"'Panaši į tėtį' means:",opts:["similar to mom","looks like dad","loves dad","lives with dad"],ans:1},
+  {q:"How do you say 'birthday'?",opts:["jubiliejus","vestuvės","gimtadienis","šventė"],ans:2},
+  {q:"Aš turiu ___ seseris. (two – fem. acc.)",opts:["du","dvi","dveji","dviejų"],ans:1},
+  {q:"'kartu' means:",opts:["alone","together","away","nearby"],ans:1},
+  {q:"'mylėti' means:",opts:["to buy","to call","to love","to live"],ans:2},
+  {q:"Accusative of 'trys' (masc.):",opts:["trys","trejus","tris","treji"],ans:2},
+  {q:"'darbštus' means:",opts:["lazy","sincere","diligent","polite"],ans:2},
+  {q:"Age form for 3 years old:",opts:["treji","trys","trejus","trijų"],ans:0},
+];
+
+// Special Lithuanian chars
+const specChars = ['ą','č','ę','ė','į','š','ų','ū','ž','Ą','Č','Ę','Ė','Į','Š','Ų','Ū','Ž'];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FLASHCARD
+// ─────────────────────────────────────────────────────────────────────────────
+let cards=[...flashData], ci=0, flipped=false;
+function updateCard(){
+  const c=cards[ci];
+  document.getElementById('fc-word').textContent=c.w;
+  document.getElementById('fc-hint').textContent=c.h;
+  document.getElementById('fc-trans').textContent=c.t;
+  document.getElementById('fc-ex').textContent=c.e||'';
+  document.getElementById('fc-progress').textContent=`Card ${ci+1} of ${cards.length}`;
+  document.getElementById('fc').classList.remove('flipped'); flipped=false;
+}
+function flipCard(){flipped=!flipped;document.getElementById('fc').classList.toggle('flipped',flipped);}
+function nextCard(){ci=(ci+1)%cards.length;updateCard();}
+function prevCard(){ci=(ci-1+cards.length)%cards.length;updateCard();}
+function shuffleCards(){cards=cards.sort(()=>Math.random()-.5);ci=0;updateCard();}
+updateCard();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VOCAB
+// ─────────────────────────────────────────────────────────────────────────────
+function buildVocab(id,data){
+  document.getElementById(id).innerHTML=data.map(([lt,en])=>
+    `<div class="vocab-item"><div class="vocab-lt">${lt}</div><div class="vocab-en">${en}</div></div>`
+  ).join('');
+}
+buildVocab('vg-family',vocabFamily);
+buildVocab('vg-char',vocabChar);
+buildVocab('vg-verbs',vocabVerbs);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DIALOGUES
+// ─────────────────────────────────────────────────────────────────────────────
+document.getElementById('dialogue-cards').innerHTML=
+  `<h3 style="margin-bottom:14px">💬 Key Dialogues</h3>`+
+  dialogues.map(d=>`
+    <div class="dialogue-row">
+      <div><span class="d-q">Q: </span><strong>${d.q}</strong> <span class="d-en">— ${d.eq}</span></div>
+      <div><span class="d-q">A: </span>${d.a} <span class="d-en">— ${d.ea}</span></div>
+    </div><hr style="border:none;border-top:1px solid #eee;margin:6px 0">
+  `).join('');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUIZ
+// ─────────────────────────────────────────────────────────────────────────────
+let qi=0,qscore=0,qAnswered=false,qOrder=[];
+function startQuiz(){
+  qOrder=[...quizData].sort(()=>Math.random()-.5);
+  qi=0;qscore=0;qAnswered=false;
+  document.getElementById('q-restart').style.display='none';
+  showQuestion();
+}
+function showQuestion(){
+  if(qi>=qOrder.length){endQuiz();return;}
+  const q=qOrder[qi]; qAnswered=false;
+  document.getElementById('q-score').textContent=`Score: ${qscore} / ${qi} | Q ${qi+1}/${qOrder.length}`;
+  document.getElementById('q-question').textContent=q.q;
+  document.getElementById('q-feedback').textContent='';
+  document.getElementById('q-next').style.display='none';
+  const shuffled=q.opts.map((o,i)=>({o,i})).sort(()=>Math.random()-.5);
+  document.getElementById('q-options').innerHTML=shuffled.map(({o,i})=>
+    `<div class="quiz-opt" onclick="answerQ(this,${i},${q.ans})">${o}</div>`
+  ).join('');
+}
+function answerQ(el,chosen,correct){
+  if(qAnswered)return; qAnswered=true;
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.style.pointerEvents='none');
+  if(chosen===correct){
+    el.classList.add('correct');
+    document.getElementById('q-feedback').textContent='✅ Correct!';
+    document.getElementById('q-feedback').style.color='#27ae60'; qscore++;
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll('.quiz-opt').forEach(o=>{
+      if(parseInt(o.getAttribute('onclick').match(/answerQ\(this,(\d+)/)[1])===correct) o.classList.add('correct');
+    });
+    document.getElementById('q-feedback').textContent='❌ Wrong!';
+    document.getElementById('q-feedback').style.color='#e74c3c';
+  }
+  document.getElementById('q-next').style.display='inline-block';
+}
+function nextQuestion(){qi++;showQuestion();}
+function endQuiz(){
+  document.getElementById('q-question').textContent=`Quiz done! ${qscore}/${qOrder.length}`;
+  document.getElementById('q-options').innerHTML='';
+  document.getElementById('q-feedback').textContent=qscore===qOrder.length?'🏆 Perfect!':qscore>qOrder.length/2?'👍 Good job!':'📚 Keep studying!';
+  document.getElementById('q-next').style.display='none';
+  document.getElementById('q-restart').style.display='inline-block';
+  document.getElementById('q-score').textContent='';
+}
+startQuiz();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TYPING
+// ─────────────────────────────────────────────────────────────────────────────
+let tMode='en2lt', tItems=[], tIdx=0, tCorrect=0, tWrong=0, tChecked=false, tAttempted=false, hintShown=false;
+
+// Build special char buttons
+(function(){
+  const wrap=document.getElementById('spec-chars');
+  specChars.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='spec-btn'; b.textContent=c;
+    b.onclick=()=>insertChar(c);
+    wrap.appendChild(b);
+  });
+})();
+
+function insertChar(c){
+  const inp=document.getElementById('t-input');
+  const s=inp.selectionStart, e=inp.selectionEnd;
+  inp.value=inp.value.slice(0,s)+c+inp.value.slice(e);
+  inp.selectionStart=inp.selectionEnd=s+c.length;
+  inp.focus(); liveCheck();
+}
+
+function setMode(m, btn){
+  tMode=m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  initTyping();
+}
+
+function initTyping(){
+  tItems=[...typingData].filter(x=>tMode==='en2lt'?x.mode==='en2lt':tMode==='lt2en'?x.mode==='lt2en':tMode==='listen'?x.mode==='listen':x.mode==='fill')
+    .sort(()=>Math.random()-.5);
+  if(!tItems.length) tItems=[...typingData].sort(()=>Math.random()-.5);
+  tIdx=0; tCorrect=0; tWrong=0; tChecked=false; hintShown=false;
+  updateStats(); loadTypingQ();
+}
+
+function loadTypingQ(){
+  tChecked=false; tAttempted=false; hintShown=false;
+  if(tIdx>=tItems.length){ tIdx=0; tItems.sort(()=>Math.random()-.5); }
+  const q=tItems[tIdx];
+  document.getElementById('t-prompt').textContent=q.p;
+  document.getElementById('t-sub').textContent=q.s;
+  document.getElementById('t-hint').innerHTML='';
+  document.getElementById('t-hint').style.display='none';
+  document.getElementById('t-hint-toggle').style.display='inline-block';
+  document.getElementById('t-feedback').textContent='';
+  document.getElementById('t-reveal').style.display='none';
+  document.getElementById('t-diff').innerHTML='';
+  document.getElementById('t-next-btn').style.display='none';
+  const inp=document.getElementById('t-input');
+  inp.value=''; inp.className='typing-input'; inp.focus();
+}
+
+function toggleHint(){
+  hintShown=!hintShown;
+  document.getElementById('t-hint-toggle').textContent=hintShown?'Hide hint':'Show hint';
+  if(!hintShown){document.getElementById('t-hint').style.display='none';return;}
+  renderHint();
+}
+
+function renderHint(){
+  const ans=tItems[tIdx].a;
+  const typed=normalize(document.getElementById('t-input').value);
+  const a=normalize(ans);
+  let html=`<span style="color:#555;font-size:.82rem;">The answer has <strong>${tItems[tIdx].a.length}</strong> letter${tItems[tIdx].a.length>1?'s':''} — first letter: <strong style="color:#e67e22">${tItems[tIdx].a[0]}</strong>`;
+  const alts = tItems[tIdx].alt;
+  if(alts && alts.length) html += ` &nbsp;<span style="color:#aaa">(also accepted: ${alts.join(', ')})</span>`;
+  html += `</span><br><br>`;
+  html+=`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">`;
+  for(let i=0;i<a.length;i++){
+    let bg='#ddd', color='#666', ch='&nbsp;';
+    if(i===0){
+      // always reveal first letter
+      bg='#f0a500'; color='white'; ch=ans[0];
+    } else if(i<typed.length){
+      ch=typed[i];
+      if(typed[i]===a[i]){bg='#4caf50';color='white';}
+      else {bg='#e74c3c';color='white';}
+    }
+    html+=`<div style="width:32px;height:32px;border-radius:6px;background:${bg};color:${color};
+            display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;">${ch}</div>`;
+  }
+  html+=`</div>`;
+  if(typed.length===0){
+    html+=`<p style="font-size:.78rem;color:#999;margin-top:6px;">Type to see letter-by-letter feedback</p>`;
+  }
+  const hintEl=document.getElementById('t-hint');
+  hintEl.innerHTML=html;
+  hintEl.style.display='block';
+}
+
+function normalize(s){ return s.trim().toLowerCase(); }
+
+function getAnswers(item){
+  // returns array of all acceptable answers
+  const base = item.a;
+  const extras = item.alt || [];
+  return [base, ...extras].map(normalize);
+}
+
+function isCorrect(typed, item){
+  return getAnswers(item).some(a => normalize(typed) === a);
+}
+
+function primaryAnswer(item){ return item.a; }
+
+function liveCheck(){
+  if(!tChecked) document.getElementById('t-diff').innerHTML='';
+  if(hintShown) renderHint();
+}
+
+function renderDiff(typed, answer){
+  const t=normalize(typed), a=normalize(answer);
+  let html='';
+  const maxLen=Math.max(t.length, a.length);
+  for(let i=0;i<maxLen;i++){
+    if(i>=t.length){
+      html+=`<span class="char-missing">${answer[i]||''}</span>`;
+    } else if(i>=a.length){
+      html+=`<span class="char-wrong">${typed[i]}</span>`;
+    } else if(t[i]===a[i]){
+      html+=`<span class="char-match">${typed[i]}</span>`;
+    } else {
+      html+=`<span class="char-wrong">${typed[i]}</span>`;
+    }
+  }
+  document.getElementById('t-diff').innerHTML=html;
+}
+
+function checkTyping(){
+  const typed=document.getElementById('t-input').value;
+  const ans=tItems[tIdx].a;
+  const ok=isCorrect(typed,tItems[tIdx]);
+  const inp=document.getElementById('t-input');
+  const fb=document.getElementById('t-feedback');
+  const rev=document.getElementById('t-reveal');
+  if(ok){
+    tChecked=true;
+    inp.className='typing-input ok';
+    fb.textContent='✅ Correct!'; fb.style.color='#27ae60';
+    tCorrect++; rev.style.display='none';
+    renderDiff(typed, primaryAnswer(tItems[tIdx]));
+    updateStats();
+    document.getElementById('t-next-btn').style.display='inline-block';
+  } else {
+    inp.className='typing-input err';
+    fb.textContent='❌ Not quite — try again!'; fb.style.color='#e74c3c';
+    if(!tAttempted){ tWrong++; tAttempted=true; updateStats(); }
+    rev.style.display='block';
+    rev.innerHTML='<span style="color:#aaa;font-size:.85rem;cursor:pointer;text-decoration:underline" onclick="revealAnswer()">Give up & show answer</span>';
+    inp.focus(); inp.select();
+  }
+}
+
+function revealAnswer(){
+  const ans=tItems[tIdx].a;
+  document.getElementById('t-reveal').innerHTML='✔ Answer: <strong>'+ans+'</strong>';
+  document.getElementById('t-reveal').style.color='#e74c3c';
+  document.getElementById('t-input').className='typing-input err';
+  tChecked=true;
+  document.getElementById('t-next-btn').style.display='inline-block';
+}
+
+function nextTyping(){
+  tIdx++;
+  loadTypingQ();
+}
+
+function handleKey(e){
+  if(e.key==='Enter'){
+    if(tChecked) nextTyping();
+    else checkTyping();
+  }
+}
+
+function updateStats(){
+  const tot=tCorrect+tWrong;
+  document.getElementById('t-correct').textContent=tCorrect;
+  document.getElementById('t-wrong').textContent=tWrong;
+  document.getElementById('t-pct').textContent=tot?Math.round(tCorrect/tot*100)+'%':'–';
+}
+
+initTyping();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PICTURE DESCRIBE
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Each person: gender, draw fn, traits (primary + alts)
+const picPeople = [
+  {
+    label:"Person 1 — tall young blond man, happy",
+    gender:"m",
+    traits:[
+      {a:"aukštas",   alt:[],            en:"tall"},
+      {a:"jaunas",    alt:[],            en:"young"},
+      {a:"šviesus",   alt:[],            en:"blond/light"},
+      {a:"linksmas",  alt:["geras"],     en:"happy"},
+      {a:"gražus",    alt:[],            en:"handsome"},
+    ],
+    draw(svg){
+      svg.innerHTML=`
+        <rect width="180" height="260" fill="#e8f4fd" rx="16"/>
+        <!-- body tall -->
+        <rect x="65" y="130" width="50" height="90" rx="10" fill="#5b9bd5"/>
+        <!-- neck -->
+        <rect x="82" y="112" width="16" height="22" fill="#ffe0b2"/>
+        <!-- head -->
+        <ellipse cx="90" cy="90" rx="38" ry="42" fill="#ffe0b2"/>
+        <!-- blond hair -->
+        <ellipse cx="90" cy="58" rx="38" ry="20" fill="#f9d44a"/>
+        <rect x="52" y="55" width="16" height="30" rx="8" fill="#f9d44a"/>
+        <rect x="112" y="55" width="16" height="30" rx="8" fill="#f9d44a"/>
+        <!-- eyes happy -->
+        <ellipse cx="76" cy="88" rx="5" ry="5" fill="#333"/>
+        <ellipse cx="104" cy="88" rx="5" ry="5" fill="#333"/>
+        <path d="M72 83 Q76 78 80 83" stroke="#333" stroke-width="1.5" fill="none"/>
+        <path d="M100 83 Q104 78 108 83" stroke="#333" stroke-width="1.5" fill="none"/>
+        <!-- big smile -->
+        <path d="M74 105 Q90 120 106 105" stroke="#c0392b" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- legs long -->
+        <rect x="67" y="218" width="18" height="38" rx="8" fill="#34495e"/>
+        <rect x="95" y="218" width="18" height="38" rx="8" fill="#34495e"/>
+        <!-- label -->
+        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#1a4a7a" font-family="sans-serif">vyras / m.</text>
+      `;
+    }
+  },
+  {
+    label:"Person 2 — short dark older woman, sad",
+    gender:"f",
+    traits:[
+      {a:"žema",      alt:["žemas"],     en:"short"},
+      {a:"tamsi",     alt:["tamsus"],    en:"dark"},
+      {a:"sena",      alt:["senas"],     en:"old"},
+      {a:"liūdna",    alt:["liūdnas"],   en:"sad"},
+      {a:"liekna",    alt:["lieknas"],   en:"slim"},
+    ],
+    draw(svg){
+      svg.innerHTML=`
+        <rect width="180" height="260" fill="#fdecea" rx="16"/>
+        <!-- short body -->
+        <rect x="62" y="148" width="56" height="72" rx="10" fill="#9b59b6"/>
+        <!-- neck -->
+        <rect x="82" y="133" width="16" height="18" fill="#d7a57a"/>
+        <!-- head smaller -->
+        <ellipse cx="90" cy="110" rx="32" ry="35" fill="#d7a57a"/>
+        <!-- dark hair short -->
+        <ellipse cx="90" cy="82" rx="32" ry="16" fill="#2c1a0e"/>
+        <rect x="58" y="80" width="12" height="22" rx="6" fill="#2c1a0e"/>
+        <rect x="110" y="80" width="12" height="22" rx="6" fill="#2c1a0e"/>
+        <!-- wrinkles -->
+        <path d="M68 108 Q72 105 76 108" stroke="#b07040" stroke-width="1" fill="none"/>
+        <path d="M104 108 Q108 105 112 108" stroke="#b07040" stroke-width="1" fill="none"/>
+        <!-- eyes sad -->
+        <ellipse cx="78" cy="110" rx="4" ry="4" fill="#333"/>
+        <ellipse cx="102" cy="110" rx="4" ry="4" fill="#333"/>
+        <path d="M74 105 Q78 109 82 105" stroke="#555" stroke-width="1.5" fill="none"/>
+        <path d="M98 105 Q102 109 106 105" stroke="#555" stroke-width="1.5" fill="none"/>
+        <!-- frown -->
+        <path d="M78 124 Q90 116 102 124" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- short legs -->
+        <rect x="65" y="218" width="16" height="28" rx="7" fill="#6c3483"/>
+        <rect x="99" y="218" width="16" height="28" rx="7" fill="#6c3483"/>
+        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#6c3483" font-family="sans-serif">moteris / f.</text>
+      `;
+    }
+  },
+  {
+    label:"Person 3 — big strong young man, friendly",
+    gender:"m",
+    traits:[
+      {a:"stambus",   alt:[],            en:"big/large"},
+      {a:"jaunas",    alt:[],            en:"young"},
+      {a:"draugiškas",alt:[],            en:"friendly"},
+      {a:"geras",     alt:["linksmas"],  en:"good/happy"},
+      {a:"tamsus",    alt:[],            en:"dark-haired"},
+    ],
+    draw(svg){
+      svg.innerHTML=`
+        <rect width="180" height="260" fill="#eafaf1" rx="16"/>
+        <!-- wide body -->
+        <rect x="45" y="130" width="90" height="88" rx="14" fill="#27ae60"/>
+        <!-- thick neck -->
+        <rect x="78" y="112" width="24" height="22" fill="#f0c080"/>
+        <!-- big head -->
+        <ellipse cx="90" cy="88" rx="44" ry="46" fill="#f0c080"/>
+        <!-- dark hair -->
+        <ellipse cx="90" cy="52" rx="44" ry="18" fill="#1a0a00"/>
+        <rect x="46" y="50" width="15" height="30" rx="7" fill="#1a0a00"/>
+        <rect x="119" y="50" width="15" height="30" rx="7" fill="#1a0a00"/>
+        <!-- wide smile -->
+        <path d="M68 108 Q90 128 112 108" stroke="#c0392b" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- eyes -->
+        <ellipse cx="76" cy="86" rx="6" ry="6" fill="#1a1a1a"/>
+        <ellipse cx="104" cy="86" rx="6" ry="6" fill="#1a1a1a"/>
+        <!-- arms wide -->
+        <rect x="12" y="138" width="36" height="18" rx="9" fill="#27ae60"/>
+        <rect x="132" y="138" width="36" height="18" rx="9" fill="#27ae60"/>
+        <!-- legs -->
+        <rect x="55" y="216" width="24" height="38" rx="10" fill="#1a5c2a"/>
+        <rect x="101" y="216" width="24" height="38" rx="10" fill="#1a5c2a"/>
+        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#1a5c2a" font-family="sans-serif">vyras / m.</text>
+      `;
+    }
+  },
+  {
+    label:"Person 4 — slim blond young woman, nice",
+    gender:"f",
+    traits:[
+      {a:"liekna",    alt:["lieknas"],   en:"slim"},
+      {a:"šviesi",    alt:["šviesus"],   en:"blond"},
+      {a:"jauna",     alt:["jaunas"],    en:"young"},
+      {a:"graži",     alt:["gražus"],    en:"beautiful"},
+      {a:"maloni",    alt:["malonus"],   en:"pleasant"},
+    ],
+    draw(svg){
+      svg.innerHTML=`
+        <rect width="180" height="260" fill="#fef9e7" rx="16"/>
+        <!-- slim body -->
+        <rect x="70" y="132" width="40" height="86" rx="10" fill="#e91e8c"/>
+        <!-- neck -->
+        <rect x="83" y="115" width="14" height="20" fill="#ffe0c0"/>
+        <!-- head -->
+        <ellipse cx="90" cy="90" rx="35" ry="38" fill="#ffe0c0"/>
+        <!-- long blond hair -->
+        <ellipse cx="90" cy="60" rx="36" ry="18" fill="#f5d020"/>
+        <rect x="54" y="58" width="14" height="70" rx="7" fill="#f5d020"/>
+        <rect x="112" y="58" width="14" height="70" rx="7" fill="#f5d020"/>
+        <!-- eyes -->
+        <ellipse cx="78" cy="90" rx="5" ry="5" fill="#2980b9"/>
+        <ellipse cx="102" cy="90" rx="5" ry="5" fill="#2980b9"/>
+        <!-- lashes -->
+        <line x1="75" y1="83" x2="73" y2="79" stroke="#333" stroke-width="1.2"/>
+        <line x1="78" y1="82" x2="78" y2="78" stroke="#333" stroke-width="1.2"/>
+        <line x1="81" y1="83" x2="83" y2="79" stroke="#333" stroke-width="1.2"/>
+        <line x1="99" y1="83" x2="97" y2="79" stroke="#333" stroke-width="1.2"/>
+        <line x1="102" y1="82" x2="102" y2="78" stroke="#333" stroke-width="1.2"/>
+        <line x1="105" y1="83" x2="107" y2="79" stroke="#333" stroke-width="1.2"/>
+        <!-- gentle smile -->
+        <path d="M78 107 Q90 117 102 107" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- slim legs -->
+        <rect x="72" y="216" width="14" height="40" rx="7" fill="#880e4f"/>
+        <rect x="94" y="216" width="14" height="40" rx="7" fill="#880e4f"/>
+        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#880e4f" font-family="sans-serif">moteris / f.</text>
+      `;
+    }
+  },
+  {
+    label:"Person 5 — old tall man, slow and quiet",
+    gender:"m",
+    traits:[
+      {a:"senas",     alt:[],            en:"old"},
+      {a:"aukštas",   alt:[],            en:"tall"},
+      {a:"lėtas",     alt:[],            en:"slow"},
+      {a:"tylus",     alt:[],            en:"silent"},
+      {a:"protingas", alt:[],            en:"wise/smart"},
+    ],
+    draw(svg){
+      svg.innerHTML=`
+        <rect width="180" height="260" fill="#f4f4f4" rx="16"/>
+        <!-- tall body -->
+        <rect x="66" y="126" width="48" height="96" rx="10" fill="#7f8c8d"/>
+        <!-- neck -->
+        <rect x="82" y="110" width="16" height="20" fill="#d4a070"/>
+        <!-- head -->
+        <ellipse cx="90" cy="86" rx="36" ry="40" fill="#d4a070"/>
+        <!-- white/grey hair little -->
+        <ellipse cx="90" cy="53" rx="30" ry="10" fill="#bdc3c7"/>
+        <rect x="54" y="53" width="10" height="20" rx="5" fill="#bdc3c7"/>
+        <rect x="116" y="53" width="10" height="20" rx="5" fill="#bdc3c7"/>
+        <!-- wrinkles -->
+        <path d="M64 82 Q68 78 72 82" stroke="#a07040" stroke-width="1" fill="none"/>
+        <path d="M108 82 Q112 78 116 82" stroke="#a07040" stroke-width="1" fill="none"/>
+        <path d="M78 100 Q90 104 102 100" stroke="#a07040" stroke-width="1" fill="none"/>
+        <!-- neutral eyes -->
+        <ellipse cx="76" cy="86" rx="5" ry="4" fill="#444"/>
+        <ellipse cx="104" cy="86" rx="5" ry="4" fill="#444"/>
+        <!-- straight mouth -->
+        <line x1="78" y1="108" x2="102" y2="108" stroke="#a05030" stroke-width="2" stroke-linecap="round"/>
+        <!-- cane -->
+        <line x1="120" y1="130" x2="140" y2="222" stroke="#8B5E3C" stroke-width="4" stroke-linecap="round"/>
+        <ellipse cx="120" cy="128" rx="8" ry="5" fill="#8B5E3C"/>
+        <!-- tall legs -->
+        <rect x="68" y="220" width="18" height="38" rx="8" fill="#566573"/>
+        <rect x="94" y="220" width="18" height="38" rx="8" fill="#566573"/>
+        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#566573" font-family="sans-serif">vyras / m.</text>
+      `;
+    }
+  },
+  {
+    label:"Person 6 — young dark angry woman",
+    gender:"f",
+    traits:[
+      {a:"jauna",     alt:["jaunas"],    en:"young"},
+      {a:"tamsi",     alt:["tamsus"],    en:"dark"},
+      {a:"pikta",     alt:["piktas"],    en:"angry"},
+      {a:"graži",     alt:["gražus"],    en:"beautiful"},
+      {a:"greita",    alt:["greitas"],   en:"fast/energetic"},
+    ],
+    draw(svg){
+      svg.innerHTML=`
+        <rect width="180" height="260" fill="#fdebd0" rx="16"/>
+        <!-- body -->
+        <rect x="63" y="132" width="54" height="86" rx="10" fill="#e74c3c"/>
+        <!-- neck -->
+        <rect x="82" y="115" width="16" height="20" fill="#c8885a"/>
+        <!-- head -->
+        <ellipse cx="90" cy="90" rx="36" ry="40" fill="#c8885a"/>
+        <!-- dark hair long -->
+        <ellipse cx="90" cy="58" rx="36" ry="16" fill="#1a0a00"/>
+        <rect x="54" y="56" width="13" height="80" rx="6" fill="#1a0a00"/>
+        <rect x="113" y="56" width="13" height="80" rx="6" fill="#1a0a00"/>
+        <!-- angry brows -->
+        <path d="M70 78 Q78 72 84 76" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M96 76 Q102 72 110 78" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- eyes narrow -->
+        <ellipse cx="77" cy="89" rx="5" ry="4" fill="#1a1a1a"/>
+        <ellipse cx="103" cy="89" rx="5" ry="4" fill="#1a1a1a"/>
+        <!-- frown -->
+        <path d="M76 110 Q90 102 104 110" stroke="#922b21" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- arms crossed -->
+        <path d="M63 155 Q50 165 60 175" stroke="#e74c3c" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <path d="M117 155 Q130 165 120 175" stroke="#e74c3c" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <!-- legs -->
+        <rect x="66" y="216" width="18" height="40" rx="8" fill="#922b21"/>
+        <rect x="96" y="216" width="18" height="40" rx="8" fill="#922b21"/>
+        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#922b21" font-family="sans-serif">moteris / f.</text>
+      `;
+    }
+  },
+];
+
+let picIdx=0, picGuessed=[], picRevealed=false;
+
+function initPictures(){
+  // Build special char buttons for picture section
+  const wrap=document.getElementById('pic-spec-chars');
+  specChars.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='spec-btn'; b.textContent=c;
+    b.onclick=()=>{
+      const inp=document.getElementById('pic-input');
+      const s=inp.selectionStart,e=inp.selectionEnd;
+      inp.value=inp.value.slice(0,s)+c+inp.value.slice(e);
+      inp.selectionStart=inp.selectionEnd=s+c.length;
+      inp.focus();
+    };
+    wrap.appendChild(b);
+  });
+  loadPic();
+}
+
+function loadPic(){
+  picGuessed=[]; picRevealed=false;
+  const p=picPeople[picIdx];
+  p.draw(document.getElementById('pic-svg'));
+  document.getElementById('pic-counter').textContent=`Person ${picIdx+1} of ${picPeople.length}`;
+  document.getElementById('pic-input').value='';
+  document.getElementById('pic-input').className='typing-input';
+  document.getElementById('pic-feedback').textContent='';
+  document.getElementById('pic-guessed').innerHTML='';
+  document.getElementById('pic-chips').innerHTML='';
+  document.getElementById('pic-score-line').textContent='';
+}
+
+function checkPicWord(){
+  if(picRevealed) return;
+  const inp=document.getElementById('pic-input');
+  const typed=normalize(inp.value);
+  if(!typed) return;
+  const p=picPeople[picIdx];
+  const fb=document.getElementById('pic-feedback');
+
+  // already guessed?
+  if(picGuessed.includes(typed)){
+    fb.textContent='Already guessed!'; fb.style.color='#e67e22';
+    inp.select(); return;
+  }
+
+  // check against all traits + alts
+  let matched=null;
+  for(const t of p.traits){
+    const accepted=[normalize(t.a),...(t.alt||[]).map(normalize)];
+    if(accepted.includes(typed)){
+      // not already guessed by primary
+      if(!picGuessed.includes(normalize(t.a))){
+        matched=t; break;
+      }
+    }
+  }
+
+  if(matched){
+    picGuessed.push(normalize(matched.a));
+    fb.textContent=`✅ Correct! "${matched.a}" — ${matched.en}`; fb.style.color='#27ae60';
+    renderGuessed();
+    // all found?
+    if(picGuessed.length===p.traits.length){
+      fb.textContent='🏆 All characteristics found!'; fb.style.color='#1a4a7a';
+    }
+  } else {
+    fb.textContent='❌ Not a matching characteristic — try another!'; fb.style.color='#e74c3c';
+  }
+  inp.value=''; inp.focus();
+}
+
+function renderGuessed(){
+  const p=picPeople[picIdx];
+  const wrap=document.getElementById('pic-guessed');
+  wrap.innerHTML=picGuessed.map(g=>{
+    const t=p.traits.find(x=>normalize(x.a)===g);
+    return `<span style="padding:5px 12px;border-radius:16px;background:#d4edda;color:#155724;font-weight:700;font-size:.9rem">${t.a} <span style="font-weight:400;color:#5a9a6a">(${t.en})</span></span>`;
+  }).join('');
+  document.getElementById('pic-score-line').textContent=`Found: ${picGuessed.length} / ${p.traits.length}`;
+}
+
+function revealPic(){
+  picRevealed=true;
+  const p=picPeople[picIdx];
+  document.getElementById('pic-chips').innerHTML=
+    `<div style="width:100%;font-size:.82rem;color:#888;margin-bottom:6px">All characteristics:</div>`+
+    p.traits.map(t=>{
+      const found=picGuessed.includes(normalize(t.a));
+      const bg=found?'#d4edda':'#fdecea';
+      const col=found?'#155724':'#721c24';
+      return `<span style="padding:5px 12px;border-radius:16px;background:${bg};color:${col};font-weight:700;font-size:.9rem">${t.a} <span style="font-weight:400">(${t.en})</span></span>`;
+    }).join('');
+  document.getElementById('pic-score-line').textContent=`Score: ${picGuessed.length} / ${p.traits.length}`;
+  document.getElementById('pic-feedback').textContent='';
+}
+
+function resetPic(){ loadPic(); }
+function nextPic(){ picIdx=(picIdx+1)%picPeople.length; loadPic(); }
+function prevPic(){ picIdx=(picIdx-1+picPeople.length)%picPeople.length; loadPic(); }
+function picKey(e){ if(e.key==='Enter') checkPicWord(); }
+
+initPictures();
+
+function show(id, el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

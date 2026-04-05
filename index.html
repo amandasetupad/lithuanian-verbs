@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Žodis — Lithuanian Verb Trainer</title>
+  <title>Žodis — Lithuanian Practice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
@@ -280,6 +280,9 @@
     }
     .end-screen .perfect-msg { color: var(--success); margin-bottom: 1rem; }
 
+    .start-actions { display: flex; flex-direction: column; gap: 0.75rem; align-items: center; max-width: 360px; margin: 0 auto; }
+    .start-actions .btn { width: 100%; margin-top: 0; }
+
     /* Confetti canvas */
     #confetti-canvas {
       position: fixed;
@@ -296,8 +299,11 @@
   <div class="app">
     <div id="screen-start" class="screen start-screen active">
       <h1>ŽODIS</h1>
-      <p>Master 40 essential Lithuanian verbs. You see the infinitive; type the past form, present form, and meaning (English). Use the virtual keyboard for ą, č, ė, į, š, ų, ū, ž.</p>
-      <button class="btn btn-primary" id="btn-start">Launch mission</button>
+      <p>Choose what to practice: verb forms (40 verbs) or Lesson 7 — family, vocabulary, grammar, and quizzes.</p>
+      <div class="start-actions">
+        <button class="btn btn-primary" id="btn-verbs">Verb forms trainer</button>
+        <a class="btn btn-secondary" href="lesson7.html" style="display:inline-block;text-align:center;text-decoration:none;line-height:1.2;padding-top:0.85rem;padding-bottom:0.85rem">Lesson 7 — Family &amp; more</a>
+      </div>
     </div>
 
     <div id="screen-game" class="screen">
@@ -643,7 +649,7 @@
         }
       }
 
-      document.getElementById('btn-start').addEventListener('click', function () {
+      document.getElementById('btn-verbs').addEventListener('click', function () {
         state.index = 0;
         state.score = 0;
         state.mistakes = { past: 0, present: 0, meaning: 0 };
