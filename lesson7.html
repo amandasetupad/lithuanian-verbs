@@ -119,6 +119,18 @@
   @media(max-width:480px) {
     .vocab-grid, .quiz-options { grid-template-columns: 1fr; }
   }
+
+  .pic-frame { display: flex; justify-content: center; margin-bottom: 16px; }
+  #pic-img {
+    max-width: 100%;
+    width: min(100%, 340px);
+    height: auto;
+    max-height: 440px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
+    background: #f0f4f8;
+  }
 </style>
 </head>
 <body>
@@ -271,7 +283,7 @@
 <div id="pictures" class="section">
   <div class="card">
     <h3>🖼️ Describe the person in Lithuanian</h3>
-    <p style="font-size:.85rem;color:#888;margin-bottom:14px">Look at the illustration and type 3–5 characteristics. Each correct word scores a point. Gender forms matter!</p>
+    <p style="font-size:.85rem;color:#888;margin-bottom:14px">Look at the photo and type 3–5 characteristics. Each correct word scores a point. Gender forms matter!</p>
 
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
       <button class="btn btn-blue" onclick="prevPic()">← Prev</button>
@@ -279,9 +291,8 @@
       <span style="align-self:center;color:#888;font-size:.85rem" id="pic-counter"></span>
     </div>
 
-    <!-- Avatar canvas -->
-    <div style="display:flex;justify-content:center;margin-bottom:16px">
-      <svg id="pic-svg" width="180" height="260" viewBox="0 0 180 260" style="border-radius:16px;background:#f0f4f8;box-shadow:0 2px 10px rgba(0,0,0,.12)"></svg>
+    <div class="pic-frame">
+      <img id="pic-img" src="" alt="" width="340" height="440" />
     </div>
 
     <!-- Traits chips (shown after reveal) -->
@@ -899,248 +910,79 @@ initTyping();
 // PICTURE DESCRIBE
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Each person: gender, draw fn, traits (primary + alts)
+// Each person: gender, photo path, traits (primary + alts)
 const picPeople = [
   {
-    label:"Person 1 — tall young blond man, happy",
-    gender:"m",
-    traits:[
-      {a:"aukštas",   alt:[],            en:"tall"},
-      {a:"jaunas",    alt:[],            en:"young"},
-      {a:"šviesus",   alt:[],            en:"blond/light"},
-      {a:"linksmas",  alt:["geras"],     en:"happy"},
-      {a:"gražus",    alt:[],            en:"handsome"},
+    label: "Person 1 — tall, young, blond, happy, handsome (man)",
+    gender: "m",
+    img: "images/describe/person1.png",
+    traits: [
+      { a: "aukštas", alt: [], en: "tall" },
+      { a: "jaunas", alt: [], en: "young" },
+      { a: "šviesus", alt: [], en: "blond / light-haired" },
+      { a: "linksmas", alt: ["laimingas", "geras"], en: "happy" },
+      { a: "gražus", alt: [], en: "handsome" },
     ],
-    draw(svg){
-      svg.innerHTML=`
-        <rect width="180" height="260" fill="#e8f4fd" rx="16"/>
-        <!-- body tall -->
-        <rect x="65" y="130" width="50" height="90" rx="10" fill="#5b9bd5"/>
-        <!-- neck -->
-        <rect x="82" y="112" width="16" height="22" fill="#ffe0b2"/>
-        <!-- head -->
-        <ellipse cx="90" cy="90" rx="38" ry="42" fill="#ffe0b2"/>
-        <!-- blond hair -->
-        <ellipse cx="90" cy="58" rx="38" ry="20" fill="#f9d44a"/>
-        <rect x="52" y="55" width="16" height="30" rx="8" fill="#f9d44a"/>
-        <rect x="112" y="55" width="16" height="30" rx="8" fill="#f9d44a"/>
-        <!-- eyes happy -->
-        <ellipse cx="76" cy="88" rx="5" ry="5" fill="#333"/>
-        <ellipse cx="104" cy="88" rx="5" ry="5" fill="#333"/>
-        <path d="M72 83 Q76 78 80 83" stroke="#333" stroke-width="1.5" fill="none"/>
-        <path d="M100 83 Q104 78 108 83" stroke="#333" stroke-width="1.5" fill="none"/>
-        <!-- big smile -->
-        <path d="M74 105 Q90 120 106 105" stroke="#c0392b" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <!-- legs long -->
-        <rect x="67" y="218" width="18" height="38" rx="8" fill="#34495e"/>
-        <rect x="95" y="218" width="18" height="38" rx="8" fill="#34495e"/>
-        <!-- label -->
-        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#1a4a7a" font-family="sans-serif">vyras / m.</text>
-      `;
-    }
   },
   {
-    label:"Person 2 — short dark older woman, sad",
-    gender:"f",
-    traits:[
-      {a:"žema",      alt:["žemas"],     en:"short"},
-      {a:"tamsi",     alt:["tamsus"],    en:"dark"},
-      {a:"sena",      alt:["senas"],     en:"old"},
-      {a:"liūdna",    alt:["liūdnas"],   en:"sad"},
-      {a:"liekna",    alt:["lieknas"],   en:"slim"},
+    label: "Person 2 — older woman, sad, dark clothes, on a street",
+    gender: "f",
+    img: "images/describe/person2.png",
+    traits: [
+      { a: "sena", alt: ["senas"], en: "old" },
+      { a: "liūdna", alt: ["liūdnas"], en: "sad" },
+      { a: "tamsi", alt: ["tamsus"], en: "dark (hair / mood)" },
+      { a: "žema", alt: ["žemas"], en: "short" },
+      { a: "liekna", alt: ["lieknas"], en: "slim" },
     ],
-    draw(svg){
-      svg.innerHTML=`
-        <rect width="180" height="260" fill="#fdecea" rx="16"/>
-        <!-- short body -->
-        <rect x="62" y="148" width="56" height="72" rx="10" fill="#9b59b6"/>
-        <!-- neck -->
-        <rect x="82" y="133" width="16" height="18" fill="#d7a57a"/>
-        <!-- head smaller -->
-        <ellipse cx="90" cy="110" rx="32" ry="35" fill="#d7a57a"/>
-        <!-- dark hair short -->
-        <ellipse cx="90" cy="82" rx="32" ry="16" fill="#2c1a0e"/>
-        <rect x="58" y="80" width="12" height="22" rx="6" fill="#2c1a0e"/>
-        <rect x="110" y="80" width="12" height="22" rx="6" fill="#2c1a0e"/>
-        <!-- wrinkles -->
-        <path d="M68 108 Q72 105 76 108" stroke="#b07040" stroke-width="1" fill="none"/>
-        <path d="M104 108 Q108 105 112 108" stroke="#b07040" stroke-width="1" fill="none"/>
-        <!-- eyes sad -->
-        <ellipse cx="78" cy="110" rx="4" ry="4" fill="#333"/>
-        <ellipse cx="102" cy="110" rx="4" ry="4" fill="#333"/>
-        <path d="M74 105 Q78 109 82 105" stroke="#555" stroke-width="1.5" fill="none"/>
-        <path d="M98 105 Q102 109 106 105" stroke="#555" stroke-width="1.5" fill="none"/>
-        <!-- frown -->
-        <path d="M78 124 Q90 116 102 124" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <!-- short legs -->
-        <rect x="65" y="218" width="16" height="28" rx="7" fill="#6c3483"/>
-        <rect x="99" y="218" width="16" height="28" rx="7" fill="#6c3483"/>
-        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#6c3483" font-family="sans-serif">moteris / f.</text>
-      `;
-    }
   },
   {
-    label:"Person 3 — big strong young man, friendly",
-    gender:"m",
-    traits:[
-      {a:"stambus",   alt:[],            en:"big/large"},
-      {a:"jaunas",    alt:[],            en:"young"},
-      {a:"draugiškas",alt:[],            en:"friendly"},
-      {a:"geras",     alt:["linksmas"],  en:"good/happy"},
-      {a:"tamsus",    alt:[],            en:"dark-haired"},
+    label: "Person 3 — young blond man, smiling, outdoors",
+    gender: "m",
+    img: "images/describe/person3.png",
+    traits: [
+      { a: "jaunas", alt: [], en: "young" },
+      { a: "šviesus", alt: [], en: "blond" },
+      { a: "linksmas", alt: ["laimingas", "draugiškas"], en: "happy / friendly" },
+      { a: "gražus", alt: [], en: "handsome" },
+      { a: "aukštas", alt: [], en: "tall" },
     ],
-    draw(svg){
-      svg.innerHTML=`
-        <rect width="180" height="260" fill="#eafaf1" rx="16"/>
-        <!-- wide body -->
-        <rect x="45" y="130" width="90" height="88" rx="14" fill="#27ae60"/>
-        <!-- thick neck -->
-        <rect x="78" y="112" width="24" height="22" fill="#f0c080"/>
-        <!-- big head -->
-        <ellipse cx="90" cy="88" rx="44" ry="46" fill="#f0c080"/>
-        <!-- dark hair -->
-        <ellipse cx="90" cy="52" rx="44" ry="18" fill="#1a0a00"/>
-        <rect x="46" y="50" width="15" height="30" rx="7" fill="#1a0a00"/>
-        <rect x="119" y="50" width="15" height="30" rx="7" fill="#1a0a00"/>
-        <!-- wide smile -->
-        <path d="M68 108 Q90 128 112 108" stroke="#c0392b" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <!-- eyes -->
-        <ellipse cx="76" cy="86" rx="6" ry="6" fill="#1a1a1a"/>
-        <ellipse cx="104" cy="86" rx="6" ry="6" fill="#1a1a1a"/>
-        <!-- arms wide -->
-        <rect x="12" y="138" width="36" height="18" rx="9" fill="#27ae60"/>
-        <rect x="132" y="138" width="36" height="18" rx="9" fill="#27ae60"/>
-        <!-- legs -->
-        <rect x="55" y="216" width="24" height="38" rx="10" fill="#1a5c2a"/>
-        <rect x="101" y="216" width="24" height="38" rx="10" fill="#1a5c2a"/>
-        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#1a5c2a" font-family="sans-serif">vyras / m.</text>
-      `;
-    }
   },
   {
-    label:"Person 4 — slim blond young woman, nice",
-    gender:"f",
-    traits:[
-      {a:"liekna",    alt:["lieknas"],   en:"slim"},
-      {a:"šviesi",    alt:["šviesus"],   en:"blond"},
-      {a:"jauna",     alt:["jaunas"],    en:"young"},
-      {a:"graži",     alt:["gražus"],    en:"beautiful"},
-      {a:"maloni",    alt:["malonus"],   en:"pleasant"},
+    label: "Person 4 — older man with beard and cane, in a park",
+    gender: "m",
+    img: "images/describe/person4.png",
+    traits: [
+      { a: "senas", alt: [], en: "old" },
+      { a: "aukštas", alt: [], en: "tall" },
+      { a: "barzdotas", alt: [], en: "bearded" },
+      { a: "rimtas", alt: ["tylus"], en: "serious / calm" },
+      { a: "šviesus", alt: [], en: "grey / white hair (light)" },
     ],
-    draw(svg){
-      svg.innerHTML=`
-        <rect width="180" height="260" fill="#fef9e7" rx="16"/>
-        <!-- slim body -->
-        <rect x="70" y="132" width="40" height="86" rx="10" fill="#e91e8c"/>
-        <!-- neck -->
-        <rect x="83" y="115" width="14" height="20" fill="#ffe0c0"/>
-        <!-- head -->
-        <ellipse cx="90" cy="90" rx="35" ry="38" fill="#ffe0c0"/>
-        <!-- long blond hair -->
-        <ellipse cx="90" cy="60" rx="36" ry="18" fill="#f5d020"/>
-        <rect x="54" y="58" width="14" height="70" rx="7" fill="#f5d020"/>
-        <rect x="112" y="58" width="14" height="70" rx="7" fill="#f5d020"/>
-        <!-- eyes -->
-        <ellipse cx="78" cy="90" rx="5" ry="5" fill="#2980b9"/>
-        <ellipse cx="102" cy="90" rx="5" ry="5" fill="#2980b9"/>
-        <!-- lashes -->
-        <line x1="75" y1="83" x2="73" y2="79" stroke="#333" stroke-width="1.2"/>
-        <line x1="78" y1="82" x2="78" y2="78" stroke="#333" stroke-width="1.2"/>
-        <line x1="81" y1="83" x2="83" y2="79" stroke="#333" stroke-width="1.2"/>
-        <line x1="99" y1="83" x2="97" y2="79" stroke="#333" stroke-width="1.2"/>
-        <line x1="102" y1="82" x2="102" y2="78" stroke="#333" stroke-width="1.2"/>
-        <line x1="105" y1="83" x2="107" y2="79" stroke="#333" stroke-width="1.2"/>
-        <!-- gentle smile -->
-        <path d="M78 107 Q90 117 102 107" stroke="#c0392b" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <!-- slim legs -->
-        <rect x="72" y="216" width="14" height="40" rx="7" fill="#880e4f"/>
-        <rect x="94" y="216" width="14" height="40" rx="7" fill="#880e4f"/>
-        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#880e4f" font-family="sans-serif">moteris / f.</text>
-      `;
-    }
   },
   {
-    label:"Person 5 — old tall man, slow and quiet",
-    gender:"m",
-    traits:[
-      {a:"senas",     alt:[],            en:"old"},
-      {a:"aukštas",   alt:[],            en:"tall"},
-      {a:"lėtas",     alt:[],            en:"slow"},
-      {a:"tylus",     alt:[],            en:"silent"},
-      {a:"protingas", alt:[],            en:"wise/smart"},
+    label: "Person 5 — young blond woman, smiling, indoors",
+    gender: "f",
+    img: "images/describe/person5.png",
+    traits: [
+      { a: "jauna", alt: ["jaunas"], en: "young" },
+      { a: "šviesi", alt: ["šviesus"], en: "blond" },
+      { a: "linksma", alt: ["linksmas", "laiminga"], en: "happy" },
+      { a: "graži", alt: ["gražus"], en: "beautiful" },
+      { a: "liekna", alt: ["lieknas"], en: "slim" },
     ],
-    draw(svg){
-      svg.innerHTML=`
-        <rect width="180" height="260" fill="#f4f4f4" rx="16"/>
-        <!-- tall body -->
-        <rect x="66" y="126" width="48" height="96" rx="10" fill="#7f8c8d"/>
-        <!-- neck -->
-        <rect x="82" y="110" width="16" height="20" fill="#d4a070"/>
-        <!-- head -->
-        <ellipse cx="90" cy="86" rx="36" ry="40" fill="#d4a070"/>
-        <!-- white/grey hair little -->
-        <ellipse cx="90" cy="53" rx="30" ry="10" fill="#bdc3c7"/>
-        <rect x="54" y="53" width="10" height="20" rx="5" fill="#bdc3c7"/>
-        <rect x="116" y="53" width="10" height="20" rx="5" fill="#bdc3c7"/>
-        <!-- wrinkles -->
-        <path d="M64 82 Q68 78 72 82" stroke="#a07040" stroke-width="1" fill="none"/>
-        <path d="M108 82 Q112 78 116 82" stroke="#a07040" stroke-width="1" fill="none"/>
-        <path d="M78 100 Q90 104 102 100" stroke="#a07040" stroke-width="1" fill="none"/>
-        <!-- neutral eyes -->
-        <ellipse cx="76" cy="86" rx="5" ry="4" fill="#444"/>
-        <ellipse cx="104" cy="86" rx="5" ry="4" fill="#444"/>
-        <!-- straight mouth -->
-        <line x1="78" y1="108" x2="102" y2="108" stroke="#a05030" stroke-width="2" stroke-linecap="round"/>
-        <!-- cane -->
-        <line x1="120" y1="130" x2="140" y2="222" stroke="#8B5E3C" stroke-width="4" stroke-linecap="round"/>
-        <ellipse cx="120" cy="128" rx="8" ry="5" fill="#8B5E3C"/>
-        <!-- tall legs -->
-        <rect x="68" y="220" width="18" height="38" rx="8" fill="#566573"/>
-        <rect x="94" y="220" width="18" height="38" rx="8" fill="#566573"/>
-        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#566573" font-family="sans-serif">vyras / m.</text>
-      `;
-    }
   },
   {
-    label:"Person 6 — young dark angry woman",
-    gender:"f",
-    traits:[
-      {a:"jauna",     alt:["jaunas"],    en:"young"},
-      {a:"tamsi",     alt:["tamsus"],    en:"dark"},
-      {a:"pikta",     alt:["piktas"],    en:"angry"},
-      {a:"graži",     alt:["gražus"],    en:"beautiful"},
-      {a:"greita",    alt:["greitas"],   en:"fast/energetic"},
+    label: "Person 6 — young woman running, intense / angry look",
+    gender: "f",
+    img: "images/describe/person6.png",
+    traits: [
+      { a: "jauna", alt: ["jaunas"], en: "young" },
+      { a: "tamsi", alt: ["tamsus"], en: "dark-haired" },
+      { a: "pikta", alt: ["piktas", "rimta"], en: "angry / intense" },
+      { a: "greita", alt: ["greitas"], en: "fast" },
+      { a: "graži", alt: ["gražus"], en: "beautiful" },
     ],
-    draw(svg){
-      svg.innerHTML=`
-        <rect width="180" height="260" fill="#fdebd0" rx="16"/>
-        <!-- body -->
-        <rect x="63" y="132" width="54" height="86" rx="10" fill="#e74c3c"/>
-        <!-- neck -->
-        <rect x="82" y="115" width="16" height="20" fill="#c8885a"/>
-        <!-- head -->
-        <ellipse cx="90" cy="90" rx="36" ry="40" fill="#c8885a"/>
-        <!-- dark hair long -->
-        <ellipse cx="90" cy="58" rx="36" ry="16" fill="#1a0a00"/>
-        <rect x="54" y="56" width="13" height="80" rx="6" fill="#1a0a00"/>
-        <rect x="113" y="56" width="13" height="80" rx="6" fill="#1a0a00"/>
-        <!-- angry brows -->
-        <path d="M70 78 Q78 72 84 76" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M96 76 Q102 72 110 78" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <!-- eyes narrow -->
-        <ellipse cx="77" cy="89" rx="5" ry="4" fill="#1a1a1a"/>
-        <ellipse cx="103" cy="89" rx="5" ry="4" fill="#1a1a1a"/>
-        <!-- frown -->
-        <path d="M76 110 Q90 102 104 110" stroke="#922b21" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <!-- arms crossed -->
-        <path d="M63 155 Q50 165 60 175" stroke="#e74c3c" stroke-width="10" fill="none" stroke-linecap="round"/>
-        <path d="M117 155 Q130 165 120 175" stroke="#e74c3c" stroke-width="10" fill="none" stroke-linecap="round"/>
-        <!-- legs -->
-        <rect x="66" y="216" width="18" height="40" rx="8" fill="#922b21"/>
-        <rect x="96" y="216" width="18" height="40" rx="8" fill="#922b21"/>
-        <text x="90" y="252" text-anchor="middle" font-size="10" fill="#922b21" font-family="sans-serif">moteris / f.</text>
-      `;
-    }
   },
 ];
 
@@ -1167,7 +1009,9 @@ function initPictures(){
 function loadPic(){
   picGuessed=[]; picRevealed=false;
   const p=picPeople[picIdx];
-  p.draw(document.getElementById('pic-svg'));
+  const img=document.getElementById('pic-img');
+  img.src=p.img;
+  img.alt=p.label;
   document.getElementById('pic-counter').textContent=`Person ${picIdx+1} of ${picPeople.length}`;
   document.getElementById('pic-input').value='';
   document.getElementById('pic-input').className='typing-input';
