@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lithuanian – Lesson 8</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;color:#222}
+  h1{text-align:center;padding:24px 16px 8px;font-size:1.5rem;color:#1a4a7a}
+  .subtitle{text-align:center;color:#666;font-size:.9rem;margin-bottom:16px}
+  .tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;padding:0 16px 16px}
+  .tab{padding:8px 16px;border-radius:20px;border:2px solid #1a4a7a;background:white;color:#1a4a7a;cursor:pointer;font-size:.85rem;font-weight:600;transition:all .2s}
+  .tab.active,.tab:hover{background:#1a4a7a;color:white}
+  .section{display:none;padding:0 16px 40px;max-width:820px;margin:0 auto}
+  .section.active{display:block}
+  .card{background:white;border-radius:12px;padding:16px 20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .card h3{color:#1a4a7a;margin-bottom:10px;font-size:1rem}
+
+  /* Flashcards */
+  .fc-wrap{perspective:800px;cursor:pointer;margin-bottom:16px}
+  .fc{width:100%;min-height:140px;position:relative;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+  .fc.flipped{transform:rotateY(180deg)}
+  .fc-front,.fc-back{position:absolute;width:100%;min-height:140px;border-radius:14px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.12)}
+  .fc-front{background:linear-gradient(135deg,#1a4a7a,#2d7dd2);color:white}
+  .fc-back{background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;transform:rotateY(180deg)}
+  .fc-word{font-size:1.5rem;font-weight:700}
+  .fc-hint{font-size:.8rem;opacity:.75;margin-top:6px}
+  .fc-trans{font-size:1.3rem;font-weight:700}
+  .fc-ex{font-size:.85rem;margin-top:8px;opacity:.9;font-style:italic}
+  .progress{text-align:center;color:#888;font-size:.85rem;margin-bottom:16px}
+  .nav-btns{display:flex;gap:10px;justify-content:center;margin-bottom:8px}
+  .btn{padding:10px 22px;border-radius:8px;border:none;cursor:pointer;font-size:.9rem;font-weight:600;transition:opacity .2s}
+  .btn-blue{background:#1a4a7a;color:white}
+  .btn-green{background:#27ae60;color:white}
+  .btn-gray{background:#aaa;color:white}
+  .btn:hover{opacity:.85}
+
+  /* Vocab */
+  .vocab-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .vocab-item{background:#f7f9fc;border-radius:10px;padding:10px 14px}
+  .vocab-lt{font-weight:700;color:#1a4a7a}
+  .vocab-en{color:#555;font-size:.85rem}
+
+  /* Grammar */
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  th{background:#1a4a7a;color:white;padding:8px 10px;text-align:left}
+  td{padding:7px 10px;border-bottom:1px solid #e8e8e8}
+  tr:nth-child(even) td{background:#f7f9fc}
+  .hl{color:#e74c3c;font-weight:700}
+
+  /* Typing */
+  .mode-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .mode-btn{padding:7px 14px;border-radius:16px;border:2px solid #1a4a7a;background:white;color:#1a4a7a;cursor:pointer;font-size:.8rem;font-weight:600}
+  .mode-btn.active{background:#1a4a7a;color:white}
+  .t-prompt{font-size:1.15rem;font-weight:700;color:#1a4a7a;margin-bottom:4px}
+  .t-sub{font-size:.85rem;color:#888;margin-bottom:10px;font-style:italic}
+  .t-stats{display:flex;gap:16px;justify-content:center;font-size:.85rem;color:#666;margin:6px 0 10px}
+  .t-stats span{background:#f0f4f8;padding:4px 10px;border-radius:8px}
+  .hint-toggle{font-size:.8rem;color:#2d7dd2;cursor:pointer;text-decoration:underline;margin-bottom:8px;display:inline-block}
+  .spec-chars{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .spec-btn{padding:6px 11px;border-radius:8px;border:1px solid #ccc;background:#f7f7f7;cursor:pointer;font-size:1rem;font-weight:700;color:#1a4a7a;transition:background .15s;user-select:none}
+  .spec-btn:hover{background:#dde8f7}
+  .t-input{width:100%;padding:12px 14px;font-size:1rem;border-radius:10px;border:2px solid #ddd;outline:none;transition:border .2s;font-family:inherit}
+  .t-input:focus{border-color:#2d7dd2}
+  .t-input.ok{border-color:#27ae60;background:#f0fff4}
+  .t-input.err{border-color:#e74c3c;background:#fff5f5}
+  .t-feedback{font-size:.95rem;font-weight:600;min-height:22px;margin-bottom:8px}
+  .t-reveal{font-size:.9rem;color:#e74c3c;margin-bottom:8px;display:none}
+  .char-diff{display:flex;gap:2px;font-size:1rem;flex-wrap:wrap;margin-bottom:6px}
+  .cm{color:#27ae60;font-weight:700}
+  .cw{color:#e74c3c;font-weight:700;text-decoration:underline}
+
+  /* Picture exercise */
+  .pic-img{width:100%;max-width:340px;height:auto;min-height:280px;max-height:440px;object-fit:cover;object-position:top center;border-radius:16px;box-shadow:0 3px 14px rgba(0,0,0,.18);display:block;margin:0 auto 16px;background:#e8ecf2}
+  .chip{display:inline-block;padding:5px 12px;border-radius:16px;font-weight:700;font-size:.9rem;margin:3px}
+  .chip-ok{background:#d4edda;color:#155724}
+  .chip-miss{background:#fdecea;color:#721c24}
+  .chip-hint{background:#fff3cd;color:#856404}
+
+  /* Quiz */
+  .q-opt{padding:12px;border-radius:10px;border:2px solid #ddd;background:white;cursor:pointer;text-align:center;font-size:.9rem;transition:all .2s;margin-bottom:8px}
+  .q-opt:hover{border-color:#2d7dd2}
+  .q-opt.correct{background:#d4edda;border-color:#27ae60;color:#155724;font-weight:700}
+  .q-opt.wrong{background:#f8d7da;border-color:#e74c3c;color:#721c24}
+  .q-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+  @media(max-width:480px){.vocab-grid,.q-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<p style="text-align:center;padding:12px 16px 0;font-size:.9rem"><a href="index.html" style="color:#1a4a7a;font-weight:600;text-decoration:none">← Back to Žodis</a></p>
+<h1>🇱🇹 Lithuanian – Lesson 8</h1>
+<p class="subtitle">Ar jums nešalta? (Aren't you cold?) — Weather, Clothes & Shopping</p>
+
+<div class="tabs">
+  <div class="tab active" onclick="show('flashcards',this)">Flashcards</div>
+  <div class="tab" onclick="show('typing',this)">✍️ Typing</div>
+  <div class="tab" onclick="show('vocab',this)">Vocabulary</div>
+  <div class="tab" onclick="show('grammar',this)">Grammar</div>
+  <div class="tab" onclick="show('picture',this)">🖼️ Describe</div>
+  <div class="tab" onclick="show('quiz',this)">Quiz</div>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="flashcards" class="section active">
+  <div class="card"><h3>🃏 Tap to flip</h3></div>
+  <div class="progress" id="fc-prog"></div>
+  <div class="fc-wrap" onclick="flipCard()">
+    <div class="fc" id="fc">
+      <div class="fc-front"><div class="fc-word" id="fc-w"></div><div class="fc-hint" id="fc-h"></div></div>
+      <div class="fc-back"><div class="fc-trans" id="fc-t"></div><div class="fc-ex" id="fc-e"></div></div>
+    </div>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-blue" onclick="prevCard()">← Prev</button>
+    <button class="btn btn-blue" onclick="nextCard()">Next →</button>
+  </div>
+  <div class="nav-btns"><button class="btn btn-green" onclick="shuffleCards()">🔀 Shuffle</button></div>
+</div>
+
+<!-- TYPING -->
+<div id="typing" class="section">
+  <div class="card">
+    <h3>✍️ Typing Exercises</h3>
+    <div class="mode-btns">
+      <button class="mode-btn active" onclick="setMode('en2lt',this)">🇬🇧→🇱🇹</button>
+      <button class="mode-btn" onclick="setMode('lt2en',this)">🇱🇹→🇬🇧</button>
+      <button class="mode-btn" onclick="setMode('listen',this)">👁️ Transcribe</button>
+      <button class="mode-btn" onclick="setMode('fill',this)">📝 Fill Gap</button>
+    </div>
+    <div class="t-stats">
+      <span>✅ <span id="t-ok">0</span></span>
+      <span>❌ <span id="t-no">0</span></span>
+      <span>📊 <span id="t-pct">–</span></span>
+    </div>
+    <div class="t-prompt" id="t-prompt"></div>
+    <div class="t-sub" id="t-sub"></div>
+    <span class="hint-toggle" id="t-htoggle" onclick="toggleHint()">Show hint</span>
+    <div id="t-hint" style="display:none"></div>
+    <p style="font-size:.78rem;color:#999;margin-bottom:5px">Special letters:</p>
+    <div class="spec-chars" id="t-spec"></div>
+    <input class="t-input" id="t-inp" type="text" placeholder="Type answer…"
+           oninput="liveCheck()" onkeydown="handleKey(event)" autocomplete="off" autocorrect="off" spellcheck="false"/>
+    <div class="char-diff" id="t-diff"></div>
+    <div class="t-feedback" id="t-fb"></div>
+    <div class="t-reveal" id="t-rev"></div>
+    <div class="nav-btns" style="margin-top:10px">
+      <button class="btn btn-blue" onclick="checkTyping()">Check ↵</button>
+      <button class="btn btn-green" id="t-next" onclick="nextTyping()" style="display:none">Next →</button>
+      <button class="btn btn-gray" onclick="initTyping()">🔀 Shuffle</button>
+    </div>
+  </div>
+</div>
+
+<!-- VOCABULARY -->
+<div id="vocab" class="section">
+  <div class="card"><h3>🌤️ Weather</h3><div class="vocab-grid" id="vg-weather"></div></div>
+  <div class="card"><h3>👗 Clothes</h3><div class="vocab-grid" id="vg-clothes"></div></div>
+  <div class="card"><h3>👟 Footwear & Accessories</h3><div class="vocab-grid" id="vg-acc"></div></div>
+  <div class="card"><h3>🎨 Colours & Materials</h3><div class="vocab-grid" id="vg-colours"></div></div>
+  <div class="card"><h3>🛍️ Shopping & Size</h3><div class="vocab-grid" id="vg-shop"></div></div>
+  <div class="card"><h3>🔧 Verbs</h3><div class="vocab-grid" id="vg-verbs"></div></div>
+</div>
+
+<!-- GRAMMAR -->
+<div id="grammar" class="section">
+  <div class="card">
+    <h3>📌 Colours – adjective agreement</h3>
+    <p style="font-size:.85rem;color:#555;margin-bottom:10px">Colours agree with the noun in gender.</p>
+    <table>
+      <tr><th>Colour</th><th>Masc. (vyras)</th><th>Fem. (moteris)</th></tr>
+      <tr><td>white</td><td class="hl">baltas</td><td class="hl">balta</td></tr>
+      <tr><td>black</td><td class="hl">juodas</td><td class="hl">juoda</td></tr>
+      <tr><td>red</td><td class="hl">raudonas</td><td class="hl">raudona</td></tr>
+      <tr><td>blue</td><td class="hl">mėlynas</td><td class="hl">mėlyna</td></tr>
+      <tr><td>green</td><td class="hl">žalias</td><td class="hl">žalia</td></tr>
+      <tr><td>yellow</td><td class="hl">geltonas</td><td class="hl">geltona</td></tr>
+      <tr><td>grey</td><td class="hl">pilkas</td><td class="hl">pilka</td></tr>
+      <tr><td>brown</td><td class="hl">rudas</td><td class="hl">ruda</td></tr>
+      <tr><td>pink</td><td class="hl">rausvas</td><td class="hl">rausva</td></tr>
+      <tr><td>orange</td><td class="hl">oranžinis</td><td class="hl">oranžinė</td></tr>
+      <tr><td>violet</td><td class="hl">violetinis</td><td class="hl">violetinė</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>📌 Weather expressions</h3>
+    <table>
+      <tr><th>Lithuanian</th><th>English</th></tr>
+      <tr><td>Lauke šalta.</td><td>It's cold outside.</td></tr>
+      <tr><td>Šiandien lyja.</td><td>It's raining today.</td></tr>
+      <tr><td>Rytoj snigs.</td><td>It will snow tomorrow.</td></tr>
+      <tr><td>+3 / plius trys laipsniai šilumos</td><td>3 degrees above zero</td></tr>
+      <tr><td>−10 / minus dešimt laipsnių šalčio</td><td>10 degrees below zero</td></tr>
+      <tr><td>Pietų / rytų / vakarų / šiaurės vėjas</td><td>South / East / West / North wind</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>📌 Materials – adjective forms</h3>
+    <table>
+      <tr><th>Material</th><th>Masc. adj.</th><th>Fem. adj.</th></tr>
+      <tr><td>cotton (medvilnė)</td><td class="hl">medvilninis</td><td class="hl">medvilninė</td></tr>
+      <tr><td>wool (vilna)</td><td class="hl">vilnoninis</td><td class="hl">vilnoninė</td></tr>
+      <tr><td>linen (linas)</td><td class="hl">lininis</td><td class="hl">lininė</td></tr>
+      <tr><td>leather (oda)</td><td class="hl">odinis</td><td class="hl">odinė</td></tr>
+      <tr><td>silk (šilkas)</td><td class="hl">šilkinis</td><td class="hl">šilkinė</td></tr>
+    </table>
+    <p style="font-size:.85rem;color:#555;margin-top:10px">
+      Example: <em>medvilniniai marškiniai</em> — cotton shirt &nbsp;|&nbsp; <em>odiniai batai</em> — leather shoes
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>📌 Useful shopping phrases</h3>
+    <table>
+      <tr><th>Lithuanian</th><th>English</th></tr>
+      <tr><td>Kokio dydžio?</td><td>What size?</td></tr>
+      <tr><td>Kiek kainuoja?</td><td>How much does it cost?</td></tr>
+      <tr><td>Ar galiu pasimatuoti?</td><td>Can I try it on?</td></tr>
+      <tr><td>Ar tinka?</td><td>Does it fit?</td></tr>
+      <tr><td>Noriu grąžinti.</td><td>I want to return it.</td></tr>
+      <tr><td>Yra nuolaida?</td><td>Is there a discount?</td></tr>
+      <tr><td>Įdėkite kortele.</td><td>Pay by card.</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- PICTURE DESCRIBE -->
+<div id="picture" class="section">
+  <div class="card">
+    <h3>🖼️ What are they wearing? Describe in Lithuanian!</h3>
+    <p style="font-size:.85rem;color:#888;margin-bottom:14px">Look at the photo and type clothing items, colours or materials you see. Each correct word = 1 point!</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+      <button class="btn btn-blue" onclick="prevPic()">← Prev</button>
+      <button class="btn btn-blue" onclick="nextPic()">Next →</button>
+      <span style="color:#888;font-size:.85rem" id="pic-ctr"></span>
+    </div>
+
+    <div style="text-align:center;margin-bottom:10px">
+      <div style="font-weight:700;font-size:1.05rem;color:#1a4a7a" id="pic-name"></div>
+      <div style="font-size:.85rem;color:#666;margin-top:4px" id="pic-desc-hint"></div>
+    </div>
+    <img id="pic-real-img" class="pic-img" src="" alt="" />
+
+    <div id="pic-chips" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px"></div>
+
+    <p style="font-size:.78rem;color:#999;margin-bottom:5px">Special letters:</p>
+    <div class="spec-chars" id="pic-spec"></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <input class="t-input" id="pic-inp" type="text" placeholder="e.g. juodi batai, balta palaidinė…"
+             onkeydown="picKey(event)" autocomplete="off" autocorrect="off" spellcheck="false" style="flex:1"/>
+      <button class="btn btn-blue" onclick="checkPicWord()">Add ↵</button>
+    </div>
+    <div id="pic-fb" style="font-size:.9rem;font-weight:600;min-height:22px;margin-bottom:8px"></div>
+    <div id="pic-guessed" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-green" onclick="revealPic()">👁 Reveal all</button>
+      <button class="btn btn-gray" onclick="resetPic()">🔄 Reset</button>
+    </div>
+    <div id="pic-score" style="margin-top:12px;font-size:.85rem;color:#666;text-align:center"></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="section">
+  <div class="card">
+    <div style="text-align:center;color:#666;font-size:.85rem;margin-bottom:10px" id="q-score"></div>
+    <div style="font-size:1.1rem;font-weight:600;color:#1a4a7a;margin-bottom:14px;text-align:center" id="q-q"></div>
+    <div class="q-grid" id="q-opts"></div>
+    <div style="text-align:center;margin-top:12px;font-weight:600;min-height:24px" id="q-fb"></div>
+    <div class="nav-btns" style="margin-top:14px">
+      <button class="btn btn-blue" id="q-next" onclick="nextQ()" style="display:none">Next →</button>
+      <button class="btn btn-green" id="q-restart" onclick="startQuiz()" style="display:none">🔄 Restart</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const flashData = [
+  // Weather
+  {w:"oras, orai",h:"noun",t:"weather",e:"Koks šiandien oras?"},
+  {w:"orų prognozė",h:"noun",t:"weather forecast",e:""},
+  {w:"saulė",h:"noun",t:"sun",e:""},
+  {w:"saulėtas, saulėta",h:"adj",t:"sunny",e:"Šiandien saulėta."},
+  {w:"debesuotas, debesuota",h:"adj",t:"cloudy",e:""},
+  {w:"lyti, lyja, lijo",h:"verb",t:"to rain",e:"Šiandien lyja."},
+  {w:"lietus",h:"noun",t:"rain",e:""},
+  {w:"perkūnija",h:"noun",t:"thunderstorm",e:""},
+  {w:"snigti, sninga, snigo",h:"verb",t:"to snow",e:"Rytoj snigs."},
+  {w:"sniegas",h:"noun",t:"snow",e:""},
+  {w:"šlapdriba",h:"noun",t:"sleet",e:""},
+  {w:"vėjas",h:"noun",t:"wind",e:"Pučia stiprus vėjas."},
+  {w:"stiprus, stipri",h:"adj",t:"strong",e:""},
+  {w:"silpnas, silpna",h:"adj",t:"weak",e:""},
+  {w:"temperatūra",h:"noun",t:"temperature",e:""},
+  {w:"laipsnis / laipsniai",h:"noun",t:"degree / degrees",e:"+3 plius trys laipsniai"},
+  {w:"šiluma",h:"noun",t:"warmth",e:""},
+  {w:"šaltis",h:"noun",t:"cold (n.)",e:"−10 laipsnių šalčio"},
+  {w:"rytai",h:"noun pl.",t:"East",e:""},
+  {w:"vakarai",h:"noun pl.",t:"West",e:""},
+  {w:"šiaurė",h:"noun",t:"North",e:""},
+  {w:"pietūs",h:"noun pl.",t:"South",e:""},
+  // Clothes
+  {w:"drabužiai",h:"noun pl.",t:"clothes",e:""},
+  {w:"moteriški",h:"adj pl.",t:"womenswear",e:""},
+  {w:"vyriški",h:"adj pl.",t:"menswear",e:""},
+  {w:"vaikiški",h:"adj pl.",t:"children's wear",e:""},
+  {w:"džinsai",h:"noun pl.",t:"jeans",e:""},
+  {w:"kelnės",h:"noun pl.",t:"trousers / pants",e:""},
+  {w:"šortai",h:"noun pl.",t:"shorts",e:""},
+  {w:"marškiniai",h:"noun pl.",t:"shirt",e:""},
+  {w:"marškinėliai",h:"noun pl.",t:"T-shirt",e:""},
+  {w:"kostiumas",h:"noun",t:"suit",e:""},
+  {w:"kostiumėlis",h:"noun",t:"suit (ladies)",e:""},
+  {w:"megztinis",h:"noun",t:"sweater",e:""},
+  {w:"džemperis",h:"noun",t:"jumper",e:""},
+  {w:"sijonas",h:"noun",t:"skirt",e:""},
+  {w:"palaidinė",h:"noun",t:"blouse",e:""},
+  {w:"suknelė",h:"noun",t:"dress",e:""},
+  {w:"švarkas",h:"noun",t:"jacket",e:""},
+  {w:"švarkelis",h:"noun",t:"jacket (ladies)",e:""},
+  {w:"striukė",h:"noun",t:"jacket (casual)",e:""},
+  {w:"paltas",h:"noun",t:"coat",e:""},
+  {w:"šalikas",h:"noun",t:"scarf",e:""},
+  {w:"kepurė",h:"noun",t:"cap / hat",e:""},
+  {w:"pirštinės",h:"noun pl.",t:"gloves",e:""},
+  {w:"kojinės",h:"noun pl.",t:"socks",e:""},
+  {w:"pėdkelnės",h:"noun pl.",t:"tights",e:""},
+  {w:"liemenė",h:"noun",t:"waistcoat / vest",e:""},
+  {w:"laikrodis",h:"noun",t:"watch",e:"Jis nešioja laikrodį."},
+  {w:"grandinėlė",h:"noun",t:"necklace / chain",e:""},
+  {w:"auskarai",h:"noun pl.",t:"earrings",e:""},
+  {w:"žiedas",h:"noun",t:"ring",e:""},
+  {w:"diržas",h:"noun",t:"belt",e:""},
+  {w:"kepuraitė",h:"noun",t:"beanie / small hat",e:""},
+  // Footwear & accessories
+  {w:"avalynė",h:"noun",t:"footwear",e:""},
+  {w:"batai",h:"noun pl.",t:"shoes / boots",e:""},
+  {w:"žieminiai batai",h:"noun pl.",t:"winter boots",e:""},
+  {w:"bateliai",h:"noun pl.",t:"shoes (small)",e:""},
+  {w:"basutės",h:"noun pl.",t:"sandals / slingbacks",e:""},
+  {w:"sportbačiai",h:"noun pl.",t:"sneakers / trainers",e:""},
+  {w:"kuprinė",h:"noun",t:"backpack",e:""},
+  {w:"rankinė",h:"noun",t:"bag",e:""},
+  {w:"rankinukas",h:"noun",t:"handbag",e:""},
+  {w:"skėtis",h:"noun",t:"umbrella",e:""},
+  {w:"piniginė",h:"noun",t:"wallet",e:""},
+  {w:"akiniai",h:"noun pl.",t:"glasses",e:""},
+  {w:"saulės akiniai",h:"noun pl.",t:"sunglasses",e:""},
+  // Materials
+  {w:"medvilnė",h:"noun",t:"cotton",e:"medvilniniai marškiniai"},
+  {w:"vilna",h:"noun",t:"wool",e:""},
+  {w:"linas",h:"noun",t:"linen",e:""},
+  {w:"oda",h:"noun",t:"leather",e:"odiniai batai"},
+  {w:"šilkas",h:"noun",t:"silk",e:""},
+  // Colours
+  {w:"spalvos",h:"noun pl.",t:"colours",e:""},
+  {w:"baltas / balta",h:"adj",t:"white",e:"balta suknelė"},
+  {w:"geltonas / geltona",h:"adj",t:"yellow",e:""},
+  {w:"juodas / juoda",h:"adj",t:"black",e:"juodi batai"},
+  {w:"mėlynas / mėlyna",h:"adj",t:"blue",e:"mėlyni džinsai"},
+  {w:"pilkas / pilka",h:"adj",t:"grey",e:""},
+  {w:"žalias / žalia",h:"adj",t:"green",e:""},
+  {w:"raudonas / raudona",h:"adj",t:"red",e:""},
+  {w:"rausvas / rausva",h:"adj",t:"pink",e:""},
+  {w:"rudas / ruda",h:"adj",t:"brown",e:""},
+  {w:"oranžinis / oranžinė",h:"adj",t:"orange",e:""},
+  {w:"violetinis / violetinė",h:"adj",t:"violet / purple",e:""},
+  // Shopping
+  {w:"etiketė",h:"noun",t:"label",e:""},
+  {w:"dydis",h:"noun",t:"size",e:"Kokio dydžio?"},
+  {w:"kaina",h:"noun",t:"price",e:"Kiek kainuoja?"},
+  {w:"nuolaida",h:"noun",t:"discount",e:""},
+  {w:"procentas / procentai",h:"noun",t:"percent",e:"20 procentų nuolaida"},
+  {w:"kvitas",h:"noun",t:"receipt",e:""},
+  {w:"šitas / šita",h:"pron",t:"this (m/f)",e:"Šitas švarkas gražus."},
+  // Adjectives
+  {w:"madingas / madinga",h:"adj",t:"fashionable",e:""},
+  {w:"patogus / patogi",h:"adj",t:"comfortable",e:""},
+  {w:"naujas / nauja",h:"adj",t:"new",e:""},
+  {w:"storas / stora",h:"adj",t:"thick",e:""},
+  {w:"plonas / plona",h:"adj",t:"thin",e:""},
+  {w:"ilgas / ilga",h:"adj",t:"long",e:""},
+  {w:"trumpas / trumpa",h:"adj",t:"short (length)",e:""},
+  // Verbs
+  {w:"dėvėti, dėvi, dėvėjo",h:"verb",t:"to wear (clothes)",e:"Ji dėvi suknelę."},
+  {w:"avėti, avi, avėjo",h:"verb",t:"to wear (shoes)",e:"Jis avi batus."},
+  {w:"pirkti, perka, pirko",h:"verb",t:"to buy",e:""},
+  {w:"nusipirkti, nusiperka",h:"verb",t:"to buy (completed)",e:""},
+  {w:"pasimatuoti, pasimatuoja",h:"verb",t:"to try on",e:""},
+  {w:"grąžinti, grąžina",h:"verb",t:"to return / give back",e:""},
+  {w:"pakeisti, pakeičia",h:"verb",t:"to change / exchange",e:""},
+  {w:"parodyti, parodo",h:"verb",t:"to show",e:""},
+  {w:"tikti, tinka, tiko",h:"verb",t:"to fit / suit",e:"Ar tinka?"},
+  {w:"apsirengti, apsirengia",h:"verb",t:"to dress oneself",e:""},
+  {w:"nusirengti, nusirengia",h:"verb",t:"to undress",e:""},
+  {w:"reikėti, reikia, reikėjo",h:"verb",t:"to need",e:"Man reikia palto."},
+];
+
+const typingData = [
+  // EN→LT
+  {p:"weather",a:"oras",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"weather forecast",a:"orų prognozė",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"sun",a:"saulė",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"sunny",a:"saulėta",alt:["saulėtas"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"cloudy",a:"debesuota",alt:["debesuotas"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"to rain",a:"lyti",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"rain",a:"lietus",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"thunderstorm",a:"perkūnija",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"to snow",a:"snigti",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"snow",a:"sniegas",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"wind",a:"vėjas",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"strong",a:"stiprus",alt:[],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"temperature",a:"temperatūra",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"degree",a:"laipsnis",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"warmth",a:"šiluma",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"clothes",a:"drabužiai",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"jeans",a:"džinsai",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"trousers / pants",a:"kelnės",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"shorts",a:"šortai",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"shirt",a:"marškiniai",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"T-shirt",a:"marškinėliai",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"suit",a:"kostiumas",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"sweater",a:"megztinis",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"jumper",a:"džemperis",alt:["megztinis"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"skirt",a:"sijonas",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"blouse",a:"palaidinė",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"dress",a:"suknelė",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"jacket",a:"švarkas",alt:["striukė"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"coat",a:"paltas",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"scarf",a:"šalikas",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"cap / hat",a:"kepurė",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"gloves",a:"pirštinės",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"socks",a:"kojinės",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"tights",a:"pėdkelnės",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"shoes / boots",a:"batai",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"sneakers",a:"sportbačiai",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"sandals",a:"basutės",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"bag",a:"rankinė",alt:["rankinukas"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"backpack",a:"kuprinė",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"umbrella",a:"skėtis",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"wallet",a:"piniginė",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"glasses",a:"akiniai",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"cotton",a:"medvilnė",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"wool",a:"vilna",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"leather",a:"oda",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"silk",a:"šilkas",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"linen",a:"linas",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"white",a:"baltas",alt:["balta"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"black",a:"juodas",alt:["juoda"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"red",a:"raudonas",alt:["raudona"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"blue",a:"mėlynas",alt:["mėlyna"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"green",a:"žalias",alt:["žalia"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"yellow",a:"geltonas",alt:["geltona"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"grey",a:"pilkas",alt:["pilka"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"brown",a:"rudas",alt:["ruda"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"pink",a:"rausvas",alt:["rausva"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"orange",a:"oranžinis",alt:["oranžinė"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"violet / purple",a:"violetinis",alt:["violetinė"],s:"Type in Lithuanian (masc.)",mode:"en2lt"},
+  {p:"size",a:"dydis",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"price",a:"kaina",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"discount",a:"nuolaida",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"receipt",a:"kvitas",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"fashionable",a:"madingas",alt:["madinga"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"comfortable",a:"patogus",alt:["patogi"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"thick",a:"storas",alt:["stora"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"thin",a:"plonas",alt:["plona"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"long",a:"ilgas",alt:["ilga"],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"to wear (clothes)",a:"dėvėti",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"to wear (shoes)",a:"avėti",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"to try on",a:"pasimatuoti",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"to return",a:"grąžinti",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"to fit / suit",a:"tikti",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  {p:"to need",a:"reikėti",alt:[],s:"Type in Lithuanian",mode:"en2lt"},
+  // LT→EN
+  {p:"oras",a:"weather",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"lietus",a:"rain",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"sniegas",a:"snow",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"vėjas",a:"wind",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"perkūnija",a:"thunderstorm",alt:["storm"],s:"Type in English",mode:"lt2en"},
+  {p:"saulė",a:"sun",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"temperatūra",a:"temperature",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"drabužiai",a:"clothes",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"kelnės",a:"trousers",alt:["pants"],s:"Type in English",mode:"lt2en"},
+  {p:"suknelė",a:"dress",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"sijonas",a:"skirt",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"palaidinė",a:"blouse",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"švarkas",a:"jacket",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"paltas",a:"coat",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"megztinis",a:"sweater",alt:["jumper"],s:"Type in English",mode:"lt2en"},
+  {p:"marškiniai",a:"shirt",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"marškinėliai",a:"T-shirt",alt:["t-shirt"],s:"Type in English",mode:"lt2en"},
+  {p:"šalikas",a:"scarf",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"kepurė",a:"hat",alt:["cap"],s:"Type in English",mode:"lt2en"},
+  {p:"batai",a:"shoes",alt:["boots"],s:"Type in English",mode:"lt2en"},
+  {p:"sportbačiai",a:"sneakers",alt:["trainers"],s:"Type in English",mode:"lt2en"},
+  {p:"rankinė",a:"bag",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"kuprinė",a:"backpack",alt:["rucksack"],s:"Type in English",mode:"lt2en"},
+  {p:"skėtis",a:"umbrella",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"akiniai",a:"glasses",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"medvilnė",a:"cotton",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"vilna",a:"wool",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"oda",a:"leather",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"šilkas",a:"silk",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"baltas",a:"white",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"juodas",a:"black",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"raudonas",a:"red",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"mėlynas",a:"blue",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"žalias",a:"green",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"geltonas",a:"yellow",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"pilkas",a:"grey",alt:["gray"],s:"Type in English",mode:"lt2en"},
+  {p:"rudas",a:"brown",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"rausvas",a:"pink",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"oranžinis",a:"orange",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"violetinis",a:"violet",alt:["purple"],s:"Type in English",mode:"lt2en"},
+  {p:"nuolaida",a:"discount",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"kaina",a:"price",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"dydis",a:"size",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"kvitas",a:"receipt",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"madingas",a:"fashionable",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"patogus",a:"comfortable",alt:[],s:"Type in English",mode:"lt2en"},
+  {p:"dėvėti",a:"to wear",alt:[],s:"Type in English (clothes)",mode:"lt2en"},
+  {p:"avėti",a:"to wear",alt:[],s:"Type in English (shoes)",mode:"lt2en"},
+  {p:"tikti",a:"to fit",alt:["to suit"],s:"Type in English",mode:"lt2en"},
+  {p:"grąžinti",a:"to return",alt:["to give back"],s:"Type in English",mode:"lt2en"},
+  // Transcribe
+  {p:"perkūnija",a:"perkūnija",s:"Type exactly what you see",mode:"listen"},
+  {p:"šlapdriba",a:"šlapdriba",s:"Type exactly what you see",mode:"listen"},
+  {p:"temperatūra",a:"temperatūra",s:"Type exactly what you see",mode:"listen"},
+  {p:"marškinėliai",a:"marškinėliai",s:"Type exactly what you see",mode:"listen"},
+  {p:"sportbačiai",a:"sportbačiai",s:"Type exactly what you see",mode:"listen"},
+  {p:"pėdkelnės",a:"pėdkelnės",s:"Type exactly what you see",mode:"listen"},
+  {p:"pasimatuoti",a:"pasimatuoti",s:"Type exactly what you see",mode:"listen"},
+  {p:"oranžinis",a:"oranžinis",s:"Type exactly what you see",mode:"listen"},
+  {p:"violetinis",a:"violetinis",s:"Type exactly what you see",mode:"listen"},
+  {p:"medvilninis",a:"medvilninis",s:"Type exactly what you see",mode:"listen"},
+  {p:"palaidinė",a:"palaidinė",s:"Type exactly what you see",mode:"listen"},
+  {p:"nuolaida",a:"nuolaida",s:"Type exactly what you see",mode:"listen"},
+  // Fill gap
+  {p:"Šiandien ___. (it's raining – verb 3rd p.)",a:"lyja",s:"Fill in the blank",mode:"fill"},
+  {p:"Rytoj ___. (it will snow)",a:"snigs",s:"Fill in the blank",mode:"fill"},
+  {p:"Ji dėvi ___ suknelę. (white – fem. acc.)",a:"baltą",s:"Fill in the blank",mode:"fill"},
+  {p:"Jis avi ___ batus. (black – masc. pl. acc.)",a:"juodus",s:"Fill in the blank",mode:"fill"},
+  {p:"Ar galiu ___? (try on)",a:"pasimatuoti",s:"Fill in the blank",mode:"fill"},
+  {p:"Kiek ___? (how much does it cost)",a:"kainuoja",s:"Fill in the blank",mode:"fill"},
+  {p:"Man reikia ___. (coat – gen.)",a:"palto",s:"Fill in the blank",mode:"fill"},
+  {p:"Šitas švarkas man ___. (fits)",a:"tinka",s:"Fill in the blank",mode:"fill"},
+  {p:"Yra ___? (discount)",a:"nuolaida",s:"Fill in the blank",mode:"fill"},
+  {p:"+3 plius trys laipsniai ___. (warmth)",a:"šilumos",s:"Fill in the blank",mode:"fill"},
+  {p:"Kokio ___? (size – gen.)",a:"dydžio",s:"Fill in the blank",mode:"fill"},
+  {p:"Noriu ___. (to return it)",a:"grąžinti",s:"Fill in the blank",mode:"fill"},
+];
+
+// Picture exercise — photos images/lesson8/photo1.png … photo5.png (order)
+const picPeople = [
+  {
+    name:"Person 1 — Man, casual with cap and sandals",
+    gender:"m",
+    img:"images/lesson8/photo1.png",
+    desc:"What is he wearing? Clothes, colours, accessories…",
+    traits:[
+      {a:"kepurė",       alt:[],                      en:"cap"},
+      {a:"šalikas",      alt:[],                      en:"scarf"},
+      {a:"marškinėliai", alt:["marškiniai"],          en:"T-shirt"},
+      {a:"džinsai",      alt:["kelnės"],              en:"jeans"},
+      {a:"kojinės",      alt:[],                      en:"socks"},
+      {a:"basutės",      alt:[],                      en:"sandals"},
+      {a:"saulės akiniai",alt:["akiniai"],            en:"sunglasses"},
+      {a:"piniginė",     alt:[],                      en:"wallet"},
+    ]
+  },
+  {
+    name:"Person 2 — Woman, smart casual / office",
+    gender:"f",
+    img:"images/lesson8/photo2.png",
+    desc:"What is she wearing? Clothes, colours, footwear, accessories…",
+    traits:[
+      {a:"švarkas",      alt:["švarkelis"],           en:"blazer"},
+      {a:"marškiniai",   alt:["palaidinė"],           en:"shirt"},
+      {a:"kelnės",       alt:[],                      en:"trousers"},
+      {a:"sportbačiai",  alt:["batai"],               en:"sneakers"},
+      {a:"kojinės",      alt:[],                      en:"socks"},
+      {a:"akiniai",      alt:[],                      en:"glasses"},
+    ]
+  },
+  {
+    name:"Person 3 — Woman, coat and umbrella (rain)",
+    gender:"f",
+    img:"images/lesson8/photo3.png",
+    desc:"What is she wearing? Clothes, footwear, accessories…",
+    traits:[
+      {a:"paltas",       alt:[],                      en:"coat"},
+      {a:"suknelė",      alt:[],                      en:"dress"},
+      {a:"diržas",       alt:[],                      en:"belt"},
+      {a:"pirštinės",    alt:[],                      en:"gloves"},
+      {a:"rankinė",      alt:["rankinukas"],          en:"handbag"},
+      {a:"pėdkelnės",    alt:[],                      en:"tights"},
+      {a:"bateliai",     alt:["batai"],               en:"heels / shoes"},
+      {a:"skėtis",       alt:[],                      en:"umbrella"},
+    ]
+  },
+  {
+    name:"Person 4 — Man, suit and layers",
+    gender:"m",
+    img:"images/lesson8/photo4.png",
+    desc:"What is he wearing? Clothes, accessories…",
+    traits:[
+      {a:"kostiumas",    alt:[],                      en:"suit"},
+      {a:"švarkas",      alt:[],                      en:"jacket"},
+      {a:"marškiniai",   alt:[],                      en:"shirt"},
+      {a:"džemperis",    alt:["megztinis"],           en:"sweater"},
+      {a:"kelnės",       alt:[],                      en:"trousers"},
+      {a:"batai",        alt:["bateliai"],            en:"shoes"},
+      {a:"pirštinės",    alt:[],                      en:"gloves"},
+      {a:"kuprinė",      alt:[],                      en:"backpack"},
+    ]
+  },
+  {
+    name:"Person 5 — Woman, winter jacket and boots",
+    gender:"f",
+    img:"images/lesson8/photo5.png",
+    desc:"What is she wearing? Clothes, footwear, accessories…",
+    traits:[
+      {a:"striukė",      alt:["švarkelis","švarkas"], en:"jacket"},
+      {a:"megztinis",    alt:["džemperis"],           en:"sweater"},
+      {a:"sijonas",      alt:[],                      en:"skirt"},
+      {a:"pėdkelnės",    alt:[],                      en:"tights"},
+      {a:"batai",        alt:["žieminiai batai"],     en:"boots"},
+      {a:"pirštinės",    alt:[],                      en:"gloves"},
+      {a:"rankinė",      alt:["rankinukas"],          en:"handbag"},
+    ]
+  },
+];
+
+// Vocab lists
+const vWeather=[
+  ["oras, orai","weather"],["orų prognozė","weather forecast"],
+  ["saulė","sun"],["saulėtas / -a","sunny"],["debesuotas / -a","cloudy"],
+  ["lietus","rain"],["lyti, lyja","to rain"],["perkūnija","thunderstorm"],
+  ["sniegas","snow"],["snigti, sninga","to snow"],["šlapdriba","sleet"],
+  ["vėjas","wind"],["stiprus / stipri","strong"],["silpnas / silpna","weak"],
+  ["temperatūra","temperature"],["laipsnis / laipsniai","degree / degrees"],
+  ["šiluma","warmth"],["šaltis","cold (n.)"],
+  ["rytai","East"],["vakarai","West"],["šiaurė","North"],["pietūs","South"],
+];
+const vClothes=[
+  ["drabužiai","clothes"],["moteriški","womenswear"],["vyriški","menswear"],
+  ["džinsai","jeans"],["kelnės","trousers / pants"],["šortai","shorts"],
+  ["marškiniai","shirt"],["marškinėliai","T-shirt"],["kostiumas","suit"],
+  ["megztinis","sweater"],["džemperis","jumper"],["sijonas","skirt"],
+  ["palaidinė","blouse"],["suknelė","dress"],["švarkas","jacket (formal)"],
+  ["striukė","jacket (casual)"],["paltas","coat"],["šalikas","scarf"],
+  ["kepurė","cap / hat"],["pirštinės","gloves"],["kojinės","socks"],["pėdkelnės","tights"],
+];
+const vAcc=[
+  ["batai","shoes / boots"],["žieminiai batai","winter boots"],
+  ["bateliai","shoes (small)"],["basutės","sandals"],["sportbačiai","sneakers"],
+  ["kuprinė","backpack"],["rankinė","bag"],["rankinukas","handbag"],
+  ["skėtis","umbrella"],["piniginė","wallet"],
+  ["akiniai","glasses"],["saulės akiniai","sunglasses"],
+];
+const vColours=[
+  ["baltas / balta","white"],["juodas / juoda","black"],
+  ["raudonas / raudona","red"],["mėlynas / mėlyna","blue"],
+  ["žalias / žalia","green"],["geltonas / geltona","yellow"],
+  ["pilkas / pilka","grey"],["rudas / ruda","brown"],
+  ["rausvas / rausva","pink"],["oranžinis / oranžinė","orange"],
+  ["violetinis / violetinė","violet / purple"],
+  ["medvilnė","cotton"],["vilna","wool"],["linas","linen"],
+  ["oda","leather"],["šilkas","silk"],
+];
+const vShop=[
+  ["etiketė","label"],["dydis","size"],["kaina","price"],
+  ["nuolaida","discount"],["procentas %","percent"],["kvitas","receipt"],
+  ["šitas / šita","this (m/f)"],["madingas / -a","fashionable"],
+  ["patogus / patogi","comfortable"],["naujas / nauja","new"],
+  ["storas / stora","thick"],["plonas / plona","thin"],
+  ["ilgas / ilga","long"],["trumpas / trumpa","short (length)"],
+];
+const vVerbs=[
+  ["dėvėti, dėvi","to wear (clothes)"],["avėti, avi","to wear (shoes)"],
+  ["pirkti, perka","to buy"],["nusipirkti, nusiperka","to buy (completed)"],
+  ["pasimatuoti","to try on"],["grąžinti, grąžina","to return"],
+  ["pakeisti, pakeičia","to change / exchange"],["parodyti, parodo","to show"],
+  ["tikti, tinka","to fit / suit"],["apsirengti","to dress oneself"],
+  ["nusirengti","to undress"],["reikėti, reikia","to need"],
+];
+
+// Quiz
+const quizData = [
+  {q:"'suknelė' means:",opts:["blouse","dress","skirt","jacket"],ans:1},
+  {q:"What is 'coat' in Lithuanian?",opts:["švarkas","striukė","paltas","megztinis"],ans:2},
+  {q:"'Šiandien lyja' means:",opts:["It's sunny today","It's snowing today","It's raining today","It's windy today"],ans:2},
+  {q:"Which is the word for 'receipt'?",opts:["kaina","nuolaida","kvitas","dydis"],ans:2},
+  {q:"How do you say 'black' (masc.)?",opts:["juoda","juodas","juodi","juodą"],ans:1},
+  {q:"'Ar tinka?' means:",opts:["How much?","Can I try it on?","Does it fit?","What size?"],ans:2},
+  {q:"'medvilnė' means:",opts:["wool","silk","linen","cotton"],ans:3},
+  {q:"'dėvėti' is used for:",opts:["wearing shoes","wearing clothes","buying clothes","returning clothes"],ans:1},
+  {q:"What are 'pirštinės'?",opts:["socks","tights","gloves","scarves"],ans:2},
+  {q:"'+3 laipsniai šilumos' means:",opts:["3 below zero","3 degrees warmth","3 km/h wind","3 sunny days"],ans:1},
+  {q:"'madingas' means:",opts:["comfortable","thick","fashionable","new"],ans:2},
+  {q:"How do you say 'umbrella'?",opts:["rankinė","piniginė","skėtis","akiniai"],ans:2},
+  {q:"'rausvas / rausva' means:",opts:["orange","pink","violet","brown"],ans:1},
+  {q:"'pasimatuoti' means:",opts:["to buy","to try on","to return","to show"],ans:1},
+  {q:"What does 'sportbačiai' mean?",opts:["boots","sandals","sneakers","slippers"],ans:2},
+];
+
+// ── SPECIAL CHARS ─────────────────────────────────────────────────────────────
+const specChars=['ą','č','ę','ė','į','š','ų','ū','ž','Ą','Č','Ę','Ė','Į','Š','Ų','Ū','Ž'];
+
+function buildSpecChars(containerId, inputId){
+  const wrap=document.getElementById(containerId);
+  specChars.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='spec-btn'; b.textContent=c;
+    b.onclick=()=>{
+      const inp=document.getElementById(inputId);
+      const s=inp.selectionStart,e=inp.selectionEnd;
+      inp.value=inp.value.slice(0,s)+c+inp.value.slice(e);
+      inp.selectionStart=inp.selectionEnd=s+c.length;
+      inp.focus(); liveCheck();
+    };
+    wrap.appendChild(b);
+  });
+}
+buildSpecChars('t-spec','t-inp');
+buildSpecChars('pic-spec','pic-inp');
+
+// ── FLASHCARDS ────────────────────────────────────────────────────────────────
+let cards=[...flashData],ci=0,flipped=false;
+function updateCard(){
+  const c=cards[ci];
+  document.getElementById('fc-w').textContent=c.w;
+  document.getElementById('fc-h').textContent=c.h;
+  document.getElementById('fc-t').textContent=c.t;
+  document.getElementById('fc-e').textContent=c.e||'';
+  document.getElementById('fc-prog').textContent=`Card ${ci+1} of ${cards.length}`;
+  document.getElementById('fc').classList.remove('flipped'); flipped=false;
+}
+function flipCard(){flipped=!flipped;document.getElementById('fc').classList.toggle('flipped',flipped);}
+function nextCard(){ci=(ci+1)%cards.length;updateCard();}
+function prevCard(){ci=(ci-1+cards.length)%cards.length;updateCard();}
+function shuffleCards(){cards.sort(()=>Math.random()-.5);ci=0;updateCard();}
+updateCard();
+
+// ── VOCAB ─────────────────────────────────────────────────────────────────────
+function buildVG(id,data){
+  document.getElementById(id).innerHTML=data.map(([lt,en])=>
+    `<div class="vocab-item"><div class="vocab-lt">${lt}</div><div class="vocab-en">${en}</div></div>`
+  ).join('');
+}
+buildVG('vg-weather',vWeather);buildVG('vg-clothes',vClothes);
+buildVG('vg-acc',vAcc);buildVG('vg-colours',vColours);
+buildVG('vg-shop',vShop);buildVG('vg-verbs',vVerbs);
+
+// ── TYPING ────────────────────────────────────────────────────────────────────
+let tMode='en2lt',tItems=[],tIdx=0,tOk=0,tNo=0,tChecked=false,tAttempted=false,hintShown=false;
+
+function norm(s){return s.trim().toLowerCase();}
+function getAnswers(item){return[item.a,...(item.alt||[])].map(norm);}
+function isCorrect(typed,item){return getAnswers(item).includes(norm(typed));}
+
+function setMode(m,btn){
+  tMode=m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  initTyping();
+}
+
+function initTyping(){
+  tItems=[...typingData].filter(x=>x.mode===tMode).sort(()=>Math.random()-.5);
+  if(!tItems.length)tItems=[...typingData].sort(()=>Math.random()-.5);
+  tIdx=0;tOk=0;tNo=0;tChecked=false;tAttempted=false;hintShown=false;
+  updateStats();loadTypingQ();
+}
+
+function loadTypingQ(){
+  tChecked=false;tAttempted=false;hintShown=false;
+  if(tIdx>=tItems.length){tIdx=0;tItems.sort(()=>Math.random()-.5);}
+  const q=tItems[tIdx];
+  document.getElementById('t-prompt').textContent=q.p;
+  document.getElementById('t-sub').textContent=q.s;
+  document.getElementById('t-hint').style.display='none';
+  document.getElementById('t-hint').innerHTML='';
+  document.getElementById('t-htoggle').textContent='Show hint';
+  document.getElementById('t-fb').textContent='';
+  document.getElementById('t-rev').style.display='none';
+  document.getElementById('t-diff').innerHTML='';
+  document.getElementById('t-next').style.display='none';
+  const inp=document.getElementById('t-inp');
+  inp.value='';inp.className='t-input';inp.focus();
+}
+
+function toggleHint(){
+  hintShown=!hintShown;
+  document.getElementById('t-htoggle').textContent=hintShown?'Hide hint':'Show hint';
+  if(!hintShown){document.getElementById('t-hint').style.display='none';return;}
+  renderHint();
+}
+
+function renderHint(){
+  const q=tItems[tIdx];
+  const typed=norm(document.getElementById('t-inp').value);
+  const a=norm(q.a);
+  let html=`<span style="font-size:.82rem;color:#555">Answer has <strong>${q.a.length}</strong> letters — first: <strong style="color:#e67e22">${q.a[0]}</strong>`;
+  if(q.alt&&q.alt.length) html+=` <span style="color:#aaa">(also: ${q.alt.join(', ')})</span>`;
+  html+=`</span><br><br><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">`;
+  for(let i=0;i<a.length;i++){
+    let bg='#ddd',col='#666',ch='&nbsp;';
+    if(i===0){bg='#f0a500';col='white';ch=q.a[0];}
+    else if(i<typed.length){ch=typed[i];bg=typed[i]===a[i]?'#4caf50':'#e74c3c';col='white';}
+    html+=`<div style="width:30px;height:30px;border-radius:6px;background:${bg};color:${col};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem">${ch}</div>`;
+  }
+  html+=`</div>`;
+  const el=document.getElementById('t-hint');
+  el.innerHTML=html;el.style.display='block';
+}
+
+function liveCheck(){
+  if(!tChecked)document.getElementById('t-diff').innerHTML='';
+  if(hintShown)renderHint();
+}
+
+function renderDiff(typed,answer){
+  const t=norm(typed),a=norm(answer);
+  let html='';
+  for(let i=0;i<Math.max(t.length,a.length);i++){
+    if(i>=t.length) html+=`<span class="cm" style="color:#aaa">${answer[i]||''}</span>`;
+    else if(i>=a.length) html+=`<span class="cw">${typed[i]}</span>`;
+    else if(t[i]===a[i]) html+=`<span class="cm">${typed[i]}</span>`;
+    else html+=`<span class="cw">${typed[i]}</span>`;
+  }
+  document.getElementById('t-diff').innerHTML=html;
+}
+
+function checkTyping(){
+  const typed=document.getElementById('t-inp').value;
+  const q=tItems[tIdx];
+  const ok=isCorrect(typed,q);
+  const inp=document.getElementById('t-inp');
+  const fb=document.getElementById('t-fb');
+  const rev=document.getElementById('t-rev');
+  if(ok){
+    tChecked=true;
+    inp.className='t-input ok';
+    fb.textContent='✅ Correct!';fb.style.color='#27ae60';
+    tOk++;renderDiff(typed,q.a);updateStats();
+    document.getElementById('t-next').style.display='inline-block';
+    rev.style.display='none';
+  } else {
+    inp.className='t-input err';
+    fb.textContent='❌ Try again!';fb.style.color='#e74c3c';
+    if(!tAttempted){tNo++;tAttempted=true;updateStats();}
+    rev.style.display='block';
+    rev.innerHTML=`<span style="color:#aaa;font-size:.85rem;cursor:pointer;text-decoration:underline" onclick="giveUp()">Give up & show answer</span>`;
+    inp.focus();inp.select();
+  }
+}
+
+function giveUp(){
+  const q=tItems[tIdx];
+  const all=getAnswers(q);
+  document.getElementById('t-rev').innerHTML='✔ Answer: <strong>'+all.join('</strong> or <strong>')+'</strong>';
+  document.getElementById('t-rev').style.color='#e74c3c';
+  document.getElementById('t-inp').className='t-input err';
+  tChecked=true;
+  document.getElementById('t-next').style.display='inline-block';
+}
+
+function nextTyping(){tIdx++;loadTypingQ();}
+function handleKey(e){if(e.key==='Enter'){tChecked?nextTyping():checkTyping();}}
+function updateStats(){
+  const tot=tOk+tNo;
+  document.getElementById('t-ok').textContent=tOk;
+  document.getElementById('t-no').textContent=tNo;
+  document.getElementById('t-pct').textContent=tot?Math.round(tOk/tot*100)+'%':'–';
+}
+initTyping();
+
+// ── PICTURE EXERCISE ──────────────────────────────────────────────────────────
+let picIdx=0,picGuessed=[],picRevealed=false;
+
+function loadPic(){
+  picGuessed=[];picRevealed=false;
+  const p=picPeople[picIdx];
+  document.getElementById('pic-ctr').textContent=`Person ${picIdx+1} of ${picPeople.length} — ${p.gender==='m'?'vyras (m.)':'moteris (f.)'}`;
+  document.getElementById('pic-name').textContent=p.name;
+  document.getElementById('pic-desc-hint').textContent=p.desc;
+  document.getElementById('pic-inp').value='';
+  document.getElementById('pic-inp').className='t-input';
+  document.getElementById('pic-fb').textContent='';
+  document.getElementById('pic-guessed').innerHTML='';
+  document.getElementById('pic-chips').innerHTML='';
+  document.getElementById('pic-score').textContent='';
+
+  const img=document.getElementById('pic-real-img');
+  img.src=p.img;
+  img.alt=p.name;
+}
+
+function checkPicWord(){
+  if(picRevealed)return;
+  const inp=document.getElementById('pic-inp');
+  const typed=norm(inp.value);
+  if(!typed)return;
+  const p=picPeople[picIdx];
+  const fb=document.getElementById('pic-fb');
+  if(picGuessed.includes(typed)){fb.textContent='Already guessed!';fb.style.color='#e67e22';inp.select();return;}
+  let matched=null;
+  for(const t of p.traits){
+    if(!picGuessed.includes(norm(t.a))&&[norm(t.a),...(t.alt||[]).map(norm)].includes(typed)){matched=t;break;}
+  }
+  if(matched){
+    picGuessed.push(norm(matched.a));
+    fb.textContent=`✅ "${matched.a}" — ${matched.en}`;fb.style.color='#27ae60';
+    renderPicGuessed();
+    if(picGuessed.length===p.traits.length){fb.textContent='🏆 All found!';}
+  } else {
+    fb.textContent='❌ Not a visible trait here — try another!';fb.style.color='#e74c3c';
+  }
+  inp.value='';inp.focus();
+}
+
+function renderPicGuessed(){
+  const p=picPeople[picIdx];
+  document.getElementById('pic-guessed').innerHTML=picGuessed.map(g=>{
+    const t=p.traits.find(x=>norm(x.a)===g);
+    return `<span class="chip chip-ok">${t.a} <span style="font-weight:400">(${t.en})</span></span>`;
+  }).join('');
+  document.getElementById('pic-score').textContent=`Found: ${picGuessed.length} / ${p.traits.length}`;
+}
+
+function revealPic(){
+  picRevealed=true;
+  const p=picPeople[picIdx];
+  document.getElementById('pic-chips').innerHTML=
+    `<div style="width:100%;font-size:.82rem;color:#888;margin-bottom:6px">All answers:</div>`+
+    p.traits.map(t=>{
+      const found=picGuessed.includes(norm(t.a));
+      return `<span class="chip ${found?'chip-ok':'chip-miss'}">${t.a} (${t.en})</span>`;
+    }).join('');
+  document.getElementById('pic-score').textContent=`Score: ${picGuessed.length} / ${p.traits.length}`;
+}
+
+function resetPic(){loadPic();}
+function nextPic(){picIdx=(picIdx+1)%picPeople.length;loadPic();}
+function prevPic(){picIdx=(picIdx-1+picPeople.length)%picPeople.length;loadPic();}
+function picKey(e){if(e.key==='Enter')checkPicWord();}
+loadPic();
+
+// ── QUIZ ──────────────────────────────────────────────────────────────────────
+let qi=0,qs=0,qAnswered=false,qOrder=[];
+function startQuiz(){
+  qOrder=[...quizData].sort(()=>Math.random()-.5);
+  qi=0;qs=0;qAnswered=false;
+  document.getElementById('q-restart').style.display='none';
+  showQ();
+}
+function showQ(){
+  if(qi>=qOrder.length){endQuiz();return;}
+  const q=qOrder[qi];qAnswered=false;
+  document.getElementById('q-score').textContent=`Score: ${qs}/${qi} | Q${qi+1}/${qOrder.length}`;
+  document.getElementById('q-q').textContent=q.q;
+  document.getElementById('q-fb').textContent='';
+  document.getElementById('q-next').style.display='none';
+  const shuffled=q.opts.map((o,i)=>({o,i})).sort(()=>Math.random()-.5);
+  document.getElementById('q-opts').innerHTML=shuffled.map(({o,i})=>
+    `<div class="q-opt" onclick="answerQ(this,${i},${q.ans})">${o}</div>`
+  ).join('');
+}
+function answerQ(el,chosen,correct){
+  if(qAnswered)return;qAnswered=true;
+  document.querySelectorAll('.q-opt').forEach(o=>o.style.pointerEvents='none');
+  if(chosen===correct){el.classList.add('correct');document.getElementById('q-fb').textContent='✅ Correct!';document.getElementById('q-fb').style.color='#27ae60';qs++;}
+  else{el.classList.add('wrong');document.querySelectorAll('.q-opt').forEach(o=>{if(parseInt(o.getAttribute('onclick').match(/answerQ\(this,(\d+)/)[1])===correct)o.classList.add('correct');});document.getElementById('q-fb').textContent='❌ Wrong!';document.getElementById('q-fb').style.color='#e74c3c';}
+  document.getElementById('q-next').style.display='inline-block';
+}
+function nextQ(){qi++;showQ();}
+function endQuiz(){
+  document.getElementById('q-q').textContent=`Done! ${qs}/${qOrder.length}`;
+  document.getElementById('q-opts').innerHTML='';
+  document.getElementById('q-fb').textContent=qs===qOrder.length?'🏆 Perfect!':qs>qOrder.length/2?'👍 Good!':'📚 Keep studying!';
+  document.getElementById('q-next').style.display='none';
+  document.getElementById('q-restart').style.display='inline-block';
+  document.getElementById('q-score').textContent='';
+}
+startQuiz();
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function show(id,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
