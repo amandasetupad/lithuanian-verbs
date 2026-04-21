@@ -231,17 +231,14 @@
 <div id="picture" class="section">
   <div class="card">
     <h3>🖼️ What are they wearing? Describe in Lithuanian!</h3>
-    <p style="font-size:.85rem;color:#888;margin-bottom:14px">Look at the photo and type clothing items, colours or materials you see. Each correct word = 1 point!</p>
+    <p style="font-size:.85rem;color:#888;margin-bottom:14px">Look at the photo and name what they are wearing — clothes, footwear and accessories in Lithuanian (no colours). Each correct word = 1 point!</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
       <button class="btn btn-blue" onclick="prevPic()">← Prev</button>
       <button class="btn btn-blue" onclick="nextPic()">Next →</button>
       <span style="color:#888;font-size:.85rem" id="pic-ctr"></span>
     </div>
 
-    <div style="text-align:center;margin-bottom:10px">
-      <div style="font-weight:700;font-size:1.05rem;color:#1a4a7a" id="pic-name"></div>
-      <div style="font-size:.85rem;color:#666;margin-top:4px" id="pic-desc-hint"></div>
-    </div>
+    <p style="text-align:center;font-size:.9rem;color:#555;margin-bottom:12px;line-height:1.45" id="pic-desc-hint"></p>
     <img id="pic-real-img" class="pic-img" src="" alt="" />
 
     <div id="pic-chips" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px"></div>
@@ -249,7 +246,7 @@
     <p style="font-size:.78rem;color:#999;margin-bottom:5px">Special letters:</p>
     <div class="spec-chars" id="pic-spec"></div>
     <div style="display:flex;gap:8px;margin-bottom:8px">
-      <input class="t-input" id="pic-inp" type="text" placeholder="e.g. juodi batai, balta palaidinė…"
+      <input class="t-input" id="pic-inp" type="text" placeholder="e.g. batai, švarkas, rankinė…"
              onkeydown="picKey(event)" autocomplete="off" autocorrect="off" spellcheck="false" style="flex:1"/>
       <button class="btn btn-blue" onclick="checkPicWord()">Add ↵</button>
     </div>
@@ -555,12 +552,11 @@ const typingData = [
 ];
 
 // Picture exercise — photos images/lesson8/photo1.png … photo5.png (order)
+const PIC_WEARING_HINT = "What are they wearing? Name clothes, footwear and accessories — not colours.";
 const picPeople = [
   {
-    name:"Person 1 — Man, casual with cap and sandals",
     gender:"m",
     img:"images/lesson8/photo1.png",
-    desc:"What is he wearing? Clothes, colours, accessories…",
     traits:[
       {a:"kepurė",       alt:[],                      en:"cap"},
       {a:"šalikas",      alt:[],                      en:"scarf"},
@@ -573,10 +569,8 @@ const picPeople = [
     ]
   },
   {
-    name:"Person 2 — Woman, smart casual / office",
     gender:"f",
     img:"images/lesson8/photo2.png",
-    desc:"What is she wearing? Clothes, colours, footwear, accessories…",
     traits:[
       {a:"švarkas",      alt:["švarkelis"],           en:"blazer"},
       {a:"marškiniai",   alt:["palaidinė"],           en:"shirt"},
@@ -587,10 +581,8 @@ const picPeople = [
     ]
   },
   {
-    name:"Person 3 — Woman, coat and umbrella (rain)",
     gender:"f",
     img:"images/lesson8/photo3.png",
-    desc:"What is she wearing? Clothes, footwear, accessories…",
     traits:[
       {a:"paltas",       alt:[],                      en:"coat"},
       {a:"suknelė",      alt:[],                      en:"dress"},
@@ -603,10 +595,8 @@ const picPeople = [
     ]
   },
   {
-    name:"Person 4 — Man, suit and layers",
     gender:"m",
     img:"images/lesson8/photo4.png",
-    desc:"What is he wearing? Clothes, accessories…",
     traits:[
       {a:"kostiumas",    alt:[],                      en:"suit"},
       {a:"švarkas",      alt:[],                      en:"jacket"},
@@ -619,10 +609,8 @@ const picPeople = [
     ]
   },
   {
-    name:"Person 5 — Woman, winter jacket and boots",
     gender:"f",
     img:"images/lesson8/photo5.png",
-    desc:"What is she wearing? Clothes, footwear, accessories…",
     traits:[
       {a:"striukė",      alt:["švarkelis","švarkas"], en:"jacket"},
       {a:"megztinis",    alt:["džemperis"],           en:"sweater"},
@@ -886,9 +874,8 @@ let picIdx=0,picGuessed=[],picRevealed=false;
 function loadPic(){
   picGuessed=[];picRevealed=false;
   const p=picPeople[picIdx];
-  document.getElementById('pic-ctr').textContent=`Person ${picIdx+1} of ${picPeople.length} — ${p.gender==='m'?'vyras (m.)':'moteris (f.)'}`;
-  document.getElementById('pic-name').textContent=p.name;
-  document.getElementById('pic-desc-hint').textContent=p.desc;
+  document.getElementById('pic-ctr').textContent=`Photo ${picIdx+1} of ${picPeople.length}`;
+  document.getElementById('pic-desc-hint').textContent=PIC_WEARING_HINT;
   document.getElementById('pic-inp').value='';
   document.getElementById('pic-inp').className='t-input';
   document.getElementById('pic-fb').textContent='';
@@ -898,7 +885,7 @@ function loadPic(){
 
   const img=document.getElementById('pic-real-img');
   img.src=p.img;
-  img.alt=p.name;
+  img.alt=`Photo ${picIdx+1} — describe the outfit`;
 }
 
 function checkPicWord(){
